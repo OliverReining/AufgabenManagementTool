@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Analytics {
+	
 
 	// Benutzerdaten anzeigen
 	public static Object[] showUserData(int userId) {
@@ -37,9 +38,12 @@ public class Analytics {
 		return userData;
 	}
 
-	public static Object[] showTaskData(int userId) {
+	public static void showTaskData(int userId) {
 		Object[] taskData = new Object[5];
-		String sql = "SELECT * FROM benutzer WHERE userid = ?";
+		
+		//TODO SQL Statement
+		String sql = "WHERE userid = ?"; 
+		
 		try (Connection conn = DatabaseConnection.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -47,22 +51,15 @@ public class Analytics {
 			try (ResultSet rs = stmt.executeQuery()) {
 
 				if (rs.next()) {
-					// Die abgerufenen Werte in das Array einfügen
-					taskData[0] = rs.getInt("taskid");
-					taskData[1] = rs.getString("title");
-					taskData[2] = rs.getString("description");
-					taskData[3] = rs.getInt("projectid");
+					
 				} else {
 					// Falls der Benutzer nicht existiert
 					System.out.println("Benutzer nicht gefunden.");
-					return null;
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return taskData;
-
 	}
 
 }
