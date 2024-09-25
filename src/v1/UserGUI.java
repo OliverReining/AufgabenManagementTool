@@ -69,7 +69,7 @@ public class UserGUI extends JFrame {
 		projectsLabel.setBounds(20, 80, 150, 25);
 		panel.add(projectsLabel);
 
-		JLabel projectsLabel2 = new JLabel("Anzahl Projekte");
+		JLabel projectsLabel2 = new JLabel(String.valueOf(Analytics.getProjectCount(userId)));
 		projectsLabel2.setBounds(150, 80, 150, 25);
 		panel.add(projectsLabel2);
 
@@ -77,7 +77,7 @@ public class UserGUI extends JFrame {
 		taskLabel.setBounds(20, 100, 150, 25);
 		panel.add(taskLabel);
 
-		JLabel taskLabel2 = new JLabel("Anzahl Aufgaben");
+		JLabel taskLabel2 = new JLabel(String.valueOf(Analytics.getTaskCount(userId)));
 		taskLabel2.setBounds(150, 100, 150, 25);
 		panel.add(taskLabel2);
 

@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Analytics {
-	
 
 	// Benutzerdaten anzeigen
 	public static Object[] showUserData(int userId) {
@@ -38,28 +37,46 @@ public class Analytics {
 		return userData;
 	}
 
-	public static void showTaskData(int userId) {
-		Object[] taskData = new Object[5];
-		
-		//TODO SQL Statement
-		String sql = "WHERE userid = ?"; 
-		
+	public static int getTaskCount(int userId) {
+		int taskCount = 0;
+		String sql = "SELECT COUNT(taskid) AS 'AnzahlAufgaben' FROM task_user WHERE userid = ?";
+
 		try (Connection conn = DatabaseConnection.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, userId); // Setze die UserID als Parameter
-			try (ResultSet rs = stmt.executeQuery()) {
-
-				if (rs.next()) {
-					
-				} else {
-					// Falls der Benutzer nicht existiert
-					System.out.println("Benutzer nicht gefunden.");
-				}
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				taskCount = rs.getInt("AnzahlAufgaben");
+			} else {
+				// Falls der Benutzer nicht existiert
+				System.out.println("Benutzer nicht gefunden.");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return taskCount;
+	}
+
+	public static int getProjectCount(int userId) {
+		int projectCount = 0;
+		String sql = "SELECT COUNT(DISTINCT projectid) AS AnzahlProjekte FROM task_user tu JOIN task USING(taskid) WHERE tu.userid = ?";
+
+		try (Connection conn = DatabaseConnection.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, userId); // Setze die UserID als Parameter
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				projectCount = rs.getInt("AnzahlProjekte");
+			} else {
+				// Falls der Benutzer nicht existiert
+				System.out.println("Benutzer nicht gefunden.");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return projectCount;
 	}
 
 }
