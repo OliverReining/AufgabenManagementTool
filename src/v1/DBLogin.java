@@ -6,13 +6,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @SuppressWarnings("serial")
-public class LoginScreen extends JFrame {
+public class DBLogin extends JFrame {
 
     private JTextField dbNameField;
     private JTextField usernameField;
     private JPasswordField passwordField;
 
-    public LoginScreen() {
+    public DBLogin() {
         setTitle("Datenbankverbindung");
         setSize(250, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

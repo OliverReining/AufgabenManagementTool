@@ -82,8 +82,9 @@ public class Analytics {
 
 	// Namen der Projekte und Anzahl der enthaltenen Aufgaben
 	public static List<Map<String, Object>> getProjectNamesAndTaskCount(int userId) {
-		String sql = "SELECT project.title AS Projekte, COUNT(task.taskid) AS Aufgaben, CONCAT(projektleiter.name, ' ', projektleiter.vorname) AS Projektleiter "
-				+ "FROM project JOIN task USING(projectid) " + "JOIN task_user USING(taskid) "
+		String sql = "SELECT project.title AS Projekte, COUNT(task.taskid) AS Aufgaben, "
+				+ "CONCAT(projektleiter.name, ' ', projektleiter.vorname) AS Projektleiter "
+				+ "FROM project JOIN task USING(projectid) JOIN task_user USING(taskid) "
 				+ "JOIN benutzer projektleiter ON project.projectlead = projektleiter.userid "
 				+ "WHERE task_user.userid = ? "
 				+ "GROUP BY project.title, CONCAT(projektleiter.vorname, ' ', projektleiter.name);";
@@ -107,6 +108,26 @@ public class Analytics {
 			e.printStackTrace();
 		}
 		return projectList;
+	}
+
+	public static boolean isProjectLead(int userId) {
+		boolean isLead = false;
+		String sql = "SELECT * FROM project JOIN benutzer ON benutzer.userid = project.projectlead WHERE userid = ?;";
+
+		try (Connection conn = DatabaseConnection.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setInt(1, userId);
+			ResultSet rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				isLead = true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return isLead;
 	}
 
 	// TODO

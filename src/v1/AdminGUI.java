@@ -1,6 +1,8 @@
 package v1;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
+
 import java.awt.*;
 
 @SuppressWarnings("serial")
@@ -407,6 +409,15 @@ public class AdminGUI extends JFrame {
 		displayArea.setText("");
 		String projects = projectManager.showProjects();
 		displayArea.append(projects);
+	}
+
+	private void displayProjectsAsTable(JTextArea displayArea) {
+		TableModel model = projectManager.showProjectsAsTable(); // Verwende die Methode oben
+		JTable projectTable = new JTable(model);
+
+		JScrollPane scrollPane = new JScrollPane(projectTable);
+		scrollPane.setBounds(20, 220, 473, 200); // Position und Größe anpassen
+		displayArea.add(scrollPane); // Das Panel enthält die Tabelle
 	}
 
 	// Methode zur Anzeige von Aufgaben in der Textarea.

@@ -7,12 +7,14 @@ import javax.swing.table.*;
 @SuppressWarnings("serial")
 public class UserGUI extends JFrame {
 
-	static int userId;
-	static Object[] userData;
+	private int userId;
+	private Object[] userData;
+	private boolean isProjectLead = false;
 
 	public UserGUI(int userId) {
-		UserGUI.userId = userId;
-		UserGUI.userData = Analytics.showUserData(userId);
+		this.userId = userId;
+		this.userData = Analytics.showUserData(userId);
+		this.isProjectLead = Analytics.isProjectLead(userId);
 
 		setTitle("Benutzerübersicht");
 		setSize(530, 500);
@@ -32,6 +34,12 @@ public class UserGUI extends JFrame {
 		// Übersicht der einzelnen Aufgaben
 		JPanel TasksOverview = tasksOverviewPanel();
 		tabbedPane.addTab("Aufgaben", TasksOverview);
+		
+		// falls ProjectLead, wird zusätzlicher Tab angezeigt
+		if(isProjectLead) {
+			JPanel projectLeadPanel = projectLeadPanel();
+			tabbedPane.add("Projektleitung", projectLeadPanel);
+		}
 
 		add(tabbedPane, BorderLayout.CENTER);
 
@@ -105,6 +113,28 @@ public class UserGUI extends JFrame {
 		panel.setLayout(null);
 		// TODO Auto-generated method stub
 		return panel;
+	}
+	
+	private JPanel projectLeadPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+
+        JLabel leadLabel = new JLabel("Projektleiter-Übersicht");
+        panel.add(leadLabel, BorderLayout.CENTER);
+
+    	
+    	/* extra tabbed pane in der user gui, nur sichtbar wenn userid mit einer projectleadid übereinstimmt
+    	 * zeigt nur eigene projekte an
+    	 * kann alle aufgaben seiner projekte sehen
+    	 * kann aufgaben für das projekt erstellen und löschen
+    	 * kann benutzer den aufgaben hinzufügen und entfernen
+    	 * übersicht der arbeitszeiten 
+    	 * tabbed pane innerhalb des tabbed pane?? falls projectlead für mehrere projekte
+    	 * 
+    	 */
+
+        return panel;
+		
 	}
 
 }

@@ -16,15 +16,15 @@ public class Main {
 	}
 }
 
-// Login Screen
+// Database Login Screen
 //public class Main {
-//    public static void main(String[] args) {
-//        // Zeigt den Login-Screen an
-//        SwingUtilities.invokeLater(() -> new LoginScreen().setVisible(true));
-//    }
+//	public static void main(String[] args) {
+//		// Zeigt den Login-Screen an
+//		SwingUtilities.invokeLater(() -> new DBLogin().setVisible(true));
+//	}
 //}
 
-// Ändere class um einzelne teile zu prüfen
+// User Login Screen
 //public class Main {	
 //	public static void main(String[] args) {
 //        SwingUtilities.invokeLater(() -> new UserLogin().setVisible(true));

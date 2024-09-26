@@ -6,7 +6,7 @@ import javax.swing.*;
 @SuppressWarnings("serial")
 public class UserLogin extends JFrame {
 
-	private JTextField usernameField;
+	private JTextField emailField;
 	private JPasswordField passwordField;
 
 	public UserLogin() {
@@ -15,13 +15,13 @@ public class UserLogin extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
 
-		JLabel usernameLabel = new JLabel("Email:");
-		usernameLabel.setBounds(20, 20, 100, 25);
-		add(usernameLabel);
+		JLabel emailLabel = new JLabel("Email:");
+		emailLabel.setBounds(20, 20, 100, 25);
+		add(emailLabel);
 
-		usernameField = new JTextField();
-		usernameField.setBounds(120, 20, 150, 25);
-		add(usernameField);
+		emailField = new JTextField();
+		emailField.setBounds(120, 20, 150, 25);
+		add(emailField);
 
 		JLabel passwordLabel = new JLabel("Passwort:");
 		passwordLabel.setBounds(20, 60, 100, 25);
@@ -45,22 +45,23 @@ public class UserLogin extends JFrame {
 	}
 
 	public void connect() {
-		String username = usernameField.getText();
+		String email = emailField.getText();
 		String password = new String(passwordField.getPassword());
 		String sql = "SELECT pass, role, userid FROM benutzer WHERE email = ?";
 		try {
 			Connection conn = DatabaseConnection.getConnection();
 			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setString(1, username);
+			stmt.setString(1, email);
 			ResultSet rs = stmt.executeQuery();
 
 			if (rs.next()) {
 				int userId = rs.getInt("userid");
 				String storedPass = rs.getString("pass");
 				String role = rs.getString("role");
+				
 				if (storedPass.equals(password) && role.equals("admin")) {
 					dispose();
-					new AdminGUI().setVisible(true);
+					new AdminModeFrame(userId).setVisible(true);
 				} else if (storedPass.equals(password) && role.equals("user")) {
 					dispose();
 					new UserGUI(userId).setVisible(true);
