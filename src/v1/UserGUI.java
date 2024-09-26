@@ -1,8 +1,8 @@
 package v1;
 
 import java.awt.*;
-
 import javax.swing.*;
+import javax.swing.table.*;
 
 @SuppressWarnings("serial")
 public class UserGUI extends JFrame {
@@ -86,9 +86,18 @@ public class UserGUI extends JFrame {
 
 	private JPanel projectOverwievPanel() {
 		JPanel panel = new JPanel();
-		panel.setLayout(null);
-		// TODO Auto-generated method stub
-		return panel;
+		panel.setLayout(new BorderLayout());
+	    
+		// Spalten für die JTable erstellen und Daten hinzufügen
+	    String[] columnNames = {"Projektname", "Anzahl Aufgaben", "Projektleiter"};
+	    DefaultTableModel model = new DefaultTableModel(DataPrep.prepareProjectData(userId), columnNames);
+	    JTable table = new JTable(model);
+
+	    // ScrollPane für die Tabelle hinzufügen
+	    JScrollPane scrollPane = new JScrollPane(table);
+	    panel.add(scrollPane, BorderLayout.CENTER);
+
+	    return panel;
 	}
 
 	private JPanel tasksOverviewPanel() {

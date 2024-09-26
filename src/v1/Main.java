@@ -12,7 +12,7 @@ import javax.swing.*;
 // User-GUI
 public class Main {
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> new UserGUI(2).setVisible(true)); // Öffnet die User-GUI
+		SwingUtilities.invokeLater(() -> new UserGUI(12).setVisible(true)); // Öffnet die User-GUI
 	}
 }
 

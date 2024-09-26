@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
 
 public class Analytics {
 
@@ -37,6 +38,7 @@ public class Analytics {
 		return userData;
 	}
 
+	// Gesamtanzahl der Aufgaben
 	public static int getTaskCount(int userId) {
 		int taskCount = 0;
 		String sql = "SELECT COUNT(taskid) AS 'AnzahlAufgaben' FROM task_user WHERE userid = ?";
@@ -44,13 +46,10 @@ public class Analytics {
 		try (Connection conn = DatabaseConnection.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-			stmt.setInt(1, userId); // Setze die UserID als Parameter
+			stmt.setInt(1, userId);
 			ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
+			while (rs.next()) {
 				taskCount = rs.getInt("AnzahlAufgaben");
-			} else {
-				// Falls der Benutzer nicht existiert
-				System.out.println("Benutzer nicht gefunden.");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -58,9 +57,11 @@ public class Analytics {
 		return taskCount;
 	}
 
+	// Gesamtanzahl der Projekte
 	public static int getProjectCount(int userId) {
 		int projectCount = 0;
-		String sql = "SELECT COUNT(DISTINCT projectid) AS AnzahlProjekte FROM task_user tu JOIN task USING(taskid) WHERE tu.userid = ?";
+		String sql = "SELECT COUNT(DISTINCT projectid) AS AnzahlProjekte " + "FROM task_user tu "
+				+ "JOIN task USING(taskid) " + "WHERE tu.userid = ?";
 
 		try (Connection conn = DatabaseConnection.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -78,5 +79,36 @@ public class Analytics {
 		}
 		return projectCount;
 	}
+
+	// Namen der Projekte und Anzahl der enthaltenen Aufgaben
+	public static List<Map<String, Object>> getProjectNamesAndTaskCount(int userId) {
+		String sql = "SELECT project.title AS Projekte, COUNT(task.taskid) AS Aufgaben, CONCAT(projektleiter.name, ' ', projektleiter.vorname) AS Projektleiter "
+				+ "FROM project JOIN task USING(projectid) " + "JOIN task_user USING(taskid) "
+				+ "JOIN benutzer projektleiter ON project.projectlead = projektleiter.userid "
+				+ "WHERE task_user.userid = ? "
+				+ "GROUP BY project.title, CONCAT(projektleiter.vorname, ' ', projektleiter.name);";
+		List<Map<String, Object>> projectList = new ArrayList<>();
+
+		try (Connection conn = DatabaseConnection.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setInt(1, userId);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				Map<String, Object> projectData = new HashMap<>();
+				projectData.put("Projekte", rs.getString("Projekte"));
+				projectData.put("Aufgaben", rs.getInt("Aufgaben"));
+				projectData.put("Projektleiter", rs.getString("Projektleiter"));
+
+				projectList.add(projectData);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return projectList;
+	}
+
+	// TODO
 
 }
