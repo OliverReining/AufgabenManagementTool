@@ -34,9 +34,9 @@ public class UserGUI extends JFrame {
 		// Übersicht der einzelnen Aufgaben
 		JPanel TasksOverview = tasksOverviewPanel();
 		tabbedPane.addTab("Aufgaben", TasksOverview);
-		
+
 		// falls ProjectLead, wird zusätzlicher Tab angezeigt
-		if(isProjectLead) {
+		if (isProjectLead) {
 			JPanel projectLeadPanel = projectLeadPanel();
 			tabbedPane.add("Projektleitung", projectLeadPanel);
 		}
@@ -95,46 +95,64 @@ public class UserGUI extends JFrame {
 	private JPanel projectOverwievPanel() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
-	    
+
 		// Spalten für die JTable erstellen und Daten hinzufügen
-	    String[] columnNames = {"Projektname", "Anzahl Aufgaben", "Projektleiter"};
-	    DefaultTableModel model = new DefaultTableModel(DataPrep.prepareProjectData(userId), columnNames);
-	    JTable table = new JTable(model);
+		String[] columnNames = { "Projekt", "Anzahl Aufgaben", "Projektleiter" };
+		DefaultTableModel model = new DefaultTableModel(Analytics.getProjectNamesAndTaskCount(userId), columnNames);
+		JTable table = new JTable(model);
 
-	    // ScrollPane für die Tabelle hinzufügen
-	    JScrollPane scrollPane = new JScrollPane(table);
-	    panel.add(scrollPane, BorderLayout.CENTER);
+		// ScrollPane für die Tabelle hinzufügen
+		JScrollPane scrollPane = new JScrollPane(table);
+		panel.add(scrollPane, BorderLayout.CENTER);
 
-	    return panel;
+		return panel;
 	}
 
 	private JPanel tasksOverviewPanel() {
 		JPanel panel = new JPanel();
-		panel.setLayout(null);
-		// TODO Auto-generated method stub
+		panel.setLayout(new BorderLayout());
+
+		String[] columnNames = { "Titel", "Beschreibung", "Projektleiter" };
+		DefaultTableModel model = new DefaultTableModel(Analytics.getTaskInfo(userId), columnNames);
+		JTable table = new JTable(model);
+		JScrollPane scrollPane = new JScrollPane(table);
+		panel.add(scrollPane, BorderLayout.CENTER);
+
 		return panel;
 	}
-	
+
 	private JPanel projectLeadPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
 
-        JLabel leadLabel = new JLabel("Projektleiter-Übersicht");
-        panel.add(leadLabel, BorderLayout.CENTER);
+		JTabbedPane tabbedPane = new JTabbedPane();
+		panel.add(tabbedPane);
 
-    	
-    	/* extra tabbed pane in der user gui, nur sichtbar wenn userid mit einer projectleadid übereinstimmt
-    	 * zeigt nur eigene projekte an
-    	 * kann alle aufgaben seiner projekte sehen
-    	 * kann aufgaben für das projekt erstellen und löschen
-    	 * kann benutzer den aufgaben hinzufügen und entfernen
-    	 * übersicht der arbeitszeiten 
-    	 * tabbed pane innerhalb des tabbed pane?? falls projectlead für mehrere projekte
-    	 * 
-    	 */
+		Object[][] data = Analytics.getProjectNamesAndTaskCount(userId);
 
-        return panel;
-		
+		for (int i = 0; i < data.length; i++) {
+			String projectName = (String) data[i][0];
+			JPanel projectPanel = projectPanel();
+			tabbedPane.addTab(projectName, projectPanel);
+			
+		}
+
+		/*
+		 * - extra tabbed pane in der user gui, nur sichtbar wenn userid mit einer
+		 * projectleadid übereinstimmt - zeigt nur eigene projekte an - kann alle
+		 * aufgaben seiner projekte sehen - kann aufgaben für das projekt erstellen und
+		 * löschen - kann benutzer den aufgaben hinzufügen und entfernen - übersicht der
+		 * arbeitszeiten - tabbed pane innerhalb des tabbed pane?? falls projectlead für
+		 * mehrere projekte
+		 */
+
+		return panel;
+
+	}
+
+	private JPanel projectPanel() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

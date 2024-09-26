@@ -33,8 +33,7 @@ public class TaskManager {
 			while (rs.next()) {
 				result.append("ID: ").append(rs.getInt("taskid")).append(", Titel: ").append(rs.getString("title"))
 						.append(", Beschreibung: ").append(rs.getString("description")).append(", Projekt-ID: ")
-						.append(rs.getInt("projectid")).append(", Benutzer-ID: ").append(rs.getInt("userid"))
-						.append("\n");
+						.append(rs.getInt("projectid")).append("\n");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

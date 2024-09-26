@@ -5,18 +5,15 @@ import java.util.Map;
 
 public class DataPrep {
 
-	public static Object[][] prepareProjectData(int userId) {
-		
-	    List<Map<String, Object>> projects = Analytics.getProjectNamesAndTaskCount(userId);
+	public static Object[][] prepareDataForTable(List<Map<String, Object>> List, String[] keys) {
 
-	    // Daten für die JTable vorbereiten
-	    Object[][] data = new Object[projects.size()][3];
-	    for (int i = 0; i < projects.size(); i++) {
-	        Map<String, Object> project = projects.get(i);
-	        data[i][0] = project.get("Projekte");
-	        data[i][1] = project.get("Aufgaben");
-	        data[i][2] = project.get("Projektleiter");
-	    }
+		Object[][] data = new Object[List.size()][3];
+		for (int i = 0; i < List.size(); i++) {
+			Map<String, Object> list = List.get(i);
+			for (int j = 0; j < keys.length; j++) {
+				data[i][j] = list.get(keys[j]);
+			}
+		}
 		return data;
 	}
 
