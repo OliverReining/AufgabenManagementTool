@@ -132,7 +132,7 @@ public class UserGUI extends JFrame {
 
 		for (int i = 0; i < data.length; i++) {
 			String projectName = (String) data[i][0];
-			JPanel projectPanel = projectPanel();
+			JPanel projectPanel = projectTaskPanel();
 			tabbedPane.addTab(projectName, projectPanel);
 			
 		}
@@ -150,7 +150,7 @@ public class UserGUI extends JFrame {
 
 	}
 
-	private JPanel projectPanel() {
+	private JPanel projectTaskPanel() {
 		// TODO Auto-generated method stub
 		return null;
 	}

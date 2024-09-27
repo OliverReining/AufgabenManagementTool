@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class DataPrep {
 
-	public static Object[][] prepareDataForTable(List<Map<String, Object>> List, String[] keys) {
+	public static Object[][] listMapInObject(List<Map<String, Object>> List, String[] keys) {
 
 		Object[][] data = new Object[List.size()][3];
 		for (int i = 0; i < List.size(); i++) {

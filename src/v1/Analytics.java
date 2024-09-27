@@ -108,7 +108,7 @@ public class Analytics {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return DataPrep.prepareDataForTable(projectList, keys);
+		return DataPrep.listMapInObject(projectList, keys);
 	}
 
 	// Abfrage ob zusätzliches TabbedPane angezeigt wird
@@ -135,6 +135,7 @@ public class Analytics {
 	// Titel, Beschreibung, Name des Projektleiters von Aufgaben an denen User
 	// mitarbeitet
 	public static Object[][] getTaskInfo(int userId) {
+		// Titel, Beschreibung, Projektleiter
 		String sql = "SELECT t.title AS Titel, t.description AS Beschreibung, CONCAT(proj_leader.vorname, ' ', proj_leader.name) AS Projektleiter "
 				+ "FROM task t JOIN project p ON t.projectid = p.projectid JOIN benutzer proj_leader ON p.projectlead = proj_leader.userid "
 				+ "WHERE t.taskid IN (SELECT taskid FROM task_user WHERE userid = ?) GROUP BY t.taskid;";
@@ -159,10 +160,37 @@ public class Analytics {
 			e.printStackTrace();
 		}
 
-		return DataPrep.prepareDataForTable(taskList, keys);
-
+		return DataPrep.listMapInObject(taskList, keys);
 	}
 
-	// TODO
+	public static Object[][] getProjectTasks(int userId) {
+		// Alle Aufgaben des Projektes bei denen der User Projectlead ist, und alle
+		// Mitarbeiter der Aufgaben
+		String sql = "SELECT project.title AS Projekt, task.title AS Aufgabe, "
+				+ "CONCAT(benutzer.name, ' ', benutzer.vorname) AS Mitarbeiter "
+				+ "FROM project LEFT JOIN task USING(projectid) LEFT JOIN task_user USING(taskid) "
+				+ "LEFT JOIN benutzer ON task_user.userid = benutzer.userid WHERE project.projectlead = ? "
+				+ "GROUP BY task.title, benutzer.userid ORDER BY task.title;";
+		List<Map<String, Object>> projectTasksList = new ArrayList<>();
+		String[] keys = { "Projekt", "Aufgabe", "Mitarbeiter" };
+
+		try (Connection conn = DatabaseConnection.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setInt(1, userId);
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				Map<String, Object> data = new HashMap<>();
+				for(String key : keys) {
+					data.put(key, rs.getObject(key));
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return DataPrep.listMapInObject(projectTasksList, keys);
+	}
 
 }
