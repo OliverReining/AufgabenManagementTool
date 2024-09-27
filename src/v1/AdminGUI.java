@@ -18,6 +18,8 @@ public class AdminGUI extends JFrame {
 		setSize(530, 500); // Größe des Fensters (530x500 Pixel).
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Schließaktion (beendet das Programm).
 		setLayout(new BorderLayout()); // Layout des Fensters = BorderLayout.
+		setLocationRelativeTo(null); // Fenster in der Mitte
+		setResizable(false); // nicht veränderbare Größe
 
 		// Erstellt ein TabbedPane, um mehrere Tabs für unterschiedliche
 		// Verwaltungspanels hinzuzufügen.

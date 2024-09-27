@@ -20,6 +20,8 @@ public class UserGUI extends JFrame {
 		setSize(530, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
+		setLocationRelativeTo(null);
+		setResizable(false);
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 

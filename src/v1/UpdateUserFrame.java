@@ -46,6 +46,8 @@ public class UpdateUserFrame extends JFrame {
 		setTitle("Benutzer ändern");
 		setSize(360, 300);
 		setLayout(null);
+		setLocationRelativeTo(null);
+		setResizable(false);
 
 		JLabel nameLabel = new JLabel("Name:");
 		nameLabel.setBounds(20, 20, 100, 25);

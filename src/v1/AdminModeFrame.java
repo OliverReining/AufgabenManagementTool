@@ -12,6 +12,8 @@ public class AdminModeFrame extends JFrame {
 		this.setUserId(userId);
         setTitle("Admin Options");
         setSize(300, 200);
+		setLocationRelativeTo(null);
+		setResizable(false);
 
         
         // Panel für die Buttons

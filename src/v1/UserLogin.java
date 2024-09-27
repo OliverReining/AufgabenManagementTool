@@ -14,6 +14,8 @@ public class UserLogin extends JFrame {
 		setSize(300, 180);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
+		setLocationRelativeTo(null);
+		setResizable(false);
 
 		JLabel emailLabel = new JLabel("Email:");
 		emailLabel.setBounds(20, 20, 100, 25);
