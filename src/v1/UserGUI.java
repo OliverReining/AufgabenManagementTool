@@ -153,9 +153,17 @@ public class UserGUI extends JFrame {
 	}
 
 	private JPanel projectTaskPanel() {
-		Object[][] data = Analytics.getProjectTasks(userId);
 		
-		return null;
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		
+		String[] columnNames = { "Projekt", "Aufgabe", "Mitarbeiter"};
+		DefaultTableModel model = new DefaultTableModel(Analytics.getProjectTasks(userId), columnNames);
+		JTable table = new JTable(model);
+		JScrollPane scrollPane = new JScrollPane(table);
+		panel.add(scrollPane, BorderLayout.CENTER);
+		
+		return panel;
 	}
 
 }

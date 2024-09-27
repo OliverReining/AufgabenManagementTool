@@ -178,12 +178,12 @@ public class Analytics {
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setInt(1, userId);
 			ResultSet rs = stmt.executeQuery();
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				Map<String, Object> data = new HashMap<>();
-				for(String key : keys) {
-					data.put(key, rs.getObject(key));
-				}
+				data.put(keys[0], rs.getString(keys[0]));
+				data.put(keys[1], rs.getString(keys[1]));
+				data.put(keys[2], rs.getString(keys[2]));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

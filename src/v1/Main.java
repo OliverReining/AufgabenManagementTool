@@ -10,11 +10,11 @@ import javax.swing.*;
 //}
 
 // User-GUI
-public class Main {
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> new UserGUI(5).setVisible(true)); // Öffnet die User-GUI
-	}
-}
+//public class Main {
+//	public static void main(String[] args) {
+//		SwingUtilities.invokeLater(() -> new UserGUI(5).setVisible(true)); // Öffnet die User-GUI
+//	}
+//}
 
 // Database Login Screen
 //public class Main {
@@ -25,8 +25,8 @@ public class Main {
 //}
 
 // User Login Screen
-//public class Main {	
-//	public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> new UserLogin().setVisible(true));
-//    }
-//}
+public class Main {	
+	public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new UserLogin().setVisible(true));
+    }
+}
