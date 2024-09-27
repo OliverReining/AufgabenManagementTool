@@ -151,7 +151,8 @@ public class UserGUI extends JFrame {
 	}
 
 	private JPanel projectTaskPanel() {
-		// TODO Auto-generated method stub
+		Object[][] data = Analytics.getProjectTasks(userId);
+		
 		return null;
 	}
 
