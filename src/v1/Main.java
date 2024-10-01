@@ -3,11 +3,11 @@ package v1;
 import javax.swing.*;
 
 //// Admin-GUI
-//public class Main {
-//	public static void main(String[] args) {
-//		SwingUtilities.invokeLater(() -> new AdminGUI().setVisible(true)); // Öffnet die Admin-GUI
-//	}
-//}
+public class Main {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new AdminGUI().setVisible(true)); // Öffnet die Admin-GUI
+    }
+}
 
 // User-GUI
 //public class Main {
@@ -25,8 +25,8 @@ import javax.swing.*;
 //}
 
 // User Login Screen
-public class Main {	
-	public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new UserLogin().setVisible(true));
-    }
-}
+//public class Main {
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(() -> new UserLogin().setVisible(true));
+//    }
+//}

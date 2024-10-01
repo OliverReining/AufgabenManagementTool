@@ -1,15 +1,20 @@
 package v1;
 
+import v2.Task;
+import v2.TaskManager;
+
 import javax.swing.*;
 import javax.swing.table.TableModel;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class AdminGUI extends JFrame {
 
 	private UserManager userManager = new UserManager();
 	private ProjectManager projectManager = new ProjectManager();
+	private TaskManagerOld taskManagerOld = new TaskManagerOld();
 	private TaskManager taskManager = new TaskManager();
 
 	// Konstruktor der Klasse, initialisiert das GUI-Fenster.
@@ -207,33 +212,7 @@ public class AdminGUI extends JFrame {
 		scrollPane.setBounds(20, 220, 473, 200);
 		panel.add(scrollPane);
 
-		JButton createProjectButton = new JButton("Projekt erstellen");
-		createProjectButton.setBounds(20, 140, 150, 30);
-		createProjectButton.addActionListener(e -> {
-			String title = titleField.getText();
-			String description = descriptionField.getText();
-			String projectLeadText = projectLeadField.getText();
-
-			// Validierung: Prüfen, ob die Felder leer sind oder projectLeadId keine gültige
-			// Zahl ist
-			if (title.isEmpty() || description.isEmpty() || projectLeadText.isEmpty()) {
-				JOptionPane.showMessageDialog(null, "Alle Felder müssen ausgefüllt werden.", "Fehler",
-						JOptionPane.ERROR_MESSAGE);
-			} else {
-				try {
-					int projectLeadId = Integer.parseInt(projectLeadText);
-					projectManager.createProject(title, description, projectLeadId);
-
-					titleField.setText("");
-					descriptionField.setText("");
-					projectLeadField.setText("");
-
-				} catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(null, "Projektleiter-ID muss eine gültige Zahl sein.", "Fehler",
-							JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		});
+		JButton createProjectButton = createProjectButton(titleField, descriptionField, projectLeadField);
 		panel.add(createProjectButton);
 
 		JButton clearFieldsButton = new JButton("Felder löschen");
@@ -277,6 +256,37 @@ public class AdminGUI extends JFrame {
 		panel.add(updateProjectButton);
 
 		return panel;
+	}
+
+	private JButton createProjectButton(JTextField titleField, JTextField descriptionField, JTextField projectLeadField) {
+		JButton createProjectButton = new JButton("Projekt erstellen");
+		createProjectButton.setBounds(20, 140, 150, 30);
+		createProjectButton.addActionListener(e -> {
+			String title = titleField.getText();
+			String description = descriptionField.getText();
+			String projectLeadText = projectLeadField.getText();
+
+			// Validierung: Prüfen, ob die Felder leer sind oder projectLeadId keine gültige
+			// Zahl ist
+			if (title.isEmpty() || description.isEmpty() || projectLeadText.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Alle Felder müssen ausgefüllt werden.", "Fehler",
+						JOptionPane.ERROR_MESSAGE);
+			} else {
+				try {
+					int projectLeadId = Integer.parseInt(projectLeadText);
+					projectManager.createProject(title, description, projectLeadId);
+
+					titleField.setText("");
+					descriptionField.setText("");
+					projectLeadField.setText("");
+
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Projektleiter-ID muss eine gültige Zahl sein.", "Fehler",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		return createProjectButton;
 	}
 
 	// Erstellt das Panel für die Aufgabenverwaltung (wie createUserPanel).
@@ -328,7 +338,7 @@ public class AdminGUI extends JFrame {
 			} else {
 				try {
 					int projectId = Integer.parseInt(projectIdText);
-					taskManager.createTask(title, description, projectId);
+					taskManagerOld.createTask(title, description, projectId);
 
 					titleField.setText("");
 					descriptionField.setText("");
@@ -365,7 +375,7 @@ public class AdminGUI extends JFrame {
 			if (taskInput != null && userInput != null && !taskInput.isEmpty() && !userInput.isEmpty()) {
 				int taskId = Integer.parseInt(taskInput);
 				int addUserId = Integer.parseInt(userInput);
-				taskManager.addUserToTask(taskId, addUserId);
+				taskManagerOld.addUserToTask(taskId, addUserId);
 			}
 		});
 		panel.add(addUserToTaskButton);
@@ -376,7 +386,7 @@ public class AdminGUI extends JFrame {
 			String input = JOptionPane.showInputDialog("Geben Sie die Aufgaben-ID ein, die Sie löschen möchten:");
 			if (input != null && !input.isEmpty()) {
 				int taskId = Integer.parseInt(input);
-				taskManager.deleteTask(taskId);
+				taskManagerOld.deleteTask(taskId);
 			}
 		});
 		panel.add(deleteTaskButton);
@@ -391,7 +401,7 @@ public class AdminGUI extends JFrame {
 				String newTitle = JOptionPane.showInputDialog("Neuer Titel:");
 				String newDescription = JOptionPane.showInputDialog("Neue Beschreibung:");
 				int newProjectId = Integer.parseInt(JOptionPane.showInputDialog("Neue Projekt-ID:"));
-				taskManager.updateTask(taskId, newTitle, newDescription, newProjectId);
+				taskManagerOld.updateTask(taskId, newTitle, newDescription, newProjectId);
 			}
 		});
 		panel.add(updateTaskButton);
@@ -425,7 +435,7 @@ public class AdminGUI extends JFrame {
 	// Methode zur Anzeige von Aufgaben in der Textarea.
 	private void displayTasks(JTextArea displayArea) {
 		displayArea.setText("");
-		String tasks = taskManager.showTasks();
-		displayArea.append(tasks);
+		ArrayList<Task> tasks = taskManager.getTasks();
+		displayArea.append(String.valueOf(tasks));
 	}
 }

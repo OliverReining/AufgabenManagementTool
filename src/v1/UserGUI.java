@@ -30,7 +30,7 @@ public class UserGUI extends JFrame {
 		tabbedPane.addTab("Übersicht", userOverview);
 
 		// Übersicht über die Projekte an denen der User mitarbeitet
-		JPanel projectOverwiev = projectOverwievPanel();
+		JPanel projectOverwiev = projectOverviewPanel();
 		tabbedPane.addTab("Projekte", projectOverwiev);
 
 		// Übersicht der einzelnen Aufgaben
@@ -94,7 +94,7 @@ public class UserGUI extends JFrame {
 		return panel;
 	}
 
-	private JPanel projectOverwievPanel() {
+	private JPanel projectOverviewPanel() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 

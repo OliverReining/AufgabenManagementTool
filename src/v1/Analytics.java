@@ -12,7 +12,7 @@ public class Analytics {
 	public static Object[] showUserData(int userId) {
 		Object[] userData = new Object[6];
 		String sql = "SELECT * FROM benutzer WHERE userid = ?";
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, userId); // Setze die UserID als Parameter
@@ -43,7 +43,7 @@ public class Analytics {
 		int taskCount = 0;
 		String sql = "SELECT COUNT(taskid) AS 'AnzahlAufgaben' FROM task_user WHERE userid = ?";
 
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, userId);
@@ -63,7 +63,7 @@ public class Analytics {
 		String sql = "SELECT COUNT(DISTINCT projectid) AS AnzahlProjekte " + "FROM task_user tu "
 				+ "JOIN task USING(taskid) " + "WHERE tu.userid = ?";
 
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, userId); // Setze die UserID als Parameter
@@ -91,7 +91,7 @@ public class Analytics {
 		List<Map<String, Object>> projectList = new ArrayList<>();
 		String[] keys = { "Projekte", "Aufgaben", "Projektleiter" };
 
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setInt(1, userId);
 			ResultSet rs = stmt.executeQuery();
@@ -116,7 +116,7 @@ public class Analytics {
 		boolean isLead = false;
 		String sql = "SELECT project.projectid FROM project JOIN benutzer ON benutzer.userid = project.projectlead WHERE userid = ?;";
 
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setInt(1, userId);
 			ResultSet rs = stmt.executeQuery();
@@ -142,7 +142,7 @@ public class Analytics {
 		List<Map<String, Object>> taskList = new ArrayList<>();
 		String[] keys = { "Titel", "Beschreibung", "Projektleiter" };
 
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setInt(1, userId);
 			ResultSet rs = stmt.executeQuery();
@@ -174,7 +174,7 @@ public class Analytics {
 		List<Map<String, Object>> projectTasksList = new ArrayList<>();
 		String[] keys = { "Projekt", "Aufgabe", "Mitarbeiter" };
 
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setInt(1, userId);
 			ResultSet rs = stmt.executeQuery();

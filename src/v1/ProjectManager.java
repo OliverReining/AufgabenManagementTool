@@ -14,7 +14,7 @@ public class ProjectManager {
 	// Projekt erstellen
 	public void createProject(String title, String description, int projectLeadId) {
 		String sql = "INSERT INTO project (title, description, projectlead) VALUES (?, ?, ?)";
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, title);
 			stmt.setString(2, description);
@@ -35,7 +35,7 @@ public class ProjectManager {
 				+ "CONCAT(benutzer.vorname, ' ', benutzer.name, ' ID: ', benutzer.userid) AS Projektleiter "
 				+ "FROM project p JOIN benutzer ON p.projectlead = benutzer.userid;";
 		
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql);
 				ResultSet rs = stmt.executeQuery()) {
 
@@ -59,7 +59,7 @@ public class ProjectManager {
 				+ "CONCAT(benutzer.vorname, ' ', benutzer.name, ' ID: ', benutzer.userid) AS Projektleiter "
 				+ "FROM project p JOIN benutzer ON p.projectlead = benutzer.userid;";
 
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql);
 				ResultSet rs = stmt.executeQuery()) {
 
@@ -79,7 +79,7 @@ public class ProjectManager {
 	// Projekt aktualisieren
 	public void updateProject(int projectId, String newTitle, String newDescription, int newProjectLeadId) {
 		String sql = "UPDATE project SET title = ?, description = ?, projectlead = ? WHERE projectid = ?";
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, newTitle);
 			stmt.setString(2, newDescription);
@@ -98,7 +98,7 @@ public class ProjectManager {
 	// Projekt löschen
 	public void deleteProject(int projectId) {
 		String sql = "DELETE FROM project WHERE projectid = ?";
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setInt(1, projectId);
 			stmt.executeUpdate();

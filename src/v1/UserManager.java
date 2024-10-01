@@ -12,7 +12,7 @@ public class UserManager {
 	// Benutzer erstellen
 	public void createUser(String name, String vorname, String email) {
 		String sql = "INSERT INTO benutzer (name, vorname, email) VALUES (?, ?, ?)";
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, name);
 			stmt.setString(2, vorname);
@@ -30,7 +30,7 @@ public class UserManager {
 	public String showUsers() {
 		StringBuilder result = new StringBuilder();
 		String sql = "SELECT * FROM benutzer";
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql);
 				ResultSet rs = stmt.executeQuery()) {
 
@@ -51,7 +51,7 @@ public class UserManager {
 		// Update-Query
 		String sql = "UPDATE benutzer SET name = ?, vorname = ?, email = ?, pass = ?, role = ? WHERE userid = ?";
 
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setString(1, newName);
@@ -77,7 +77,7 @@ public class UserManager {
 	// Benutzer löschen
 	public void deleteUser(int userId) {
 		String sql = "DELETE FROM benutzer WHERE userid = ?";
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setInt(1, userId);
 			stmt.executeUpdate();

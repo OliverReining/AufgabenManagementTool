@@ -17,7 +17,7 @@ public class UpdateUserFrame extends JFrame {
 	private void loadUserData(int userId) {
 		String sql = "SELECT name, vorname, email, pass, role FROM benutzer WHERE userid = ?";
 
-		try (Connection conn = DatabaseConnection.getConnection();
+		try (Connection conn = DatabaseConnectionOld.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, userId);

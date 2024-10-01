@@ -51,7 +51,7 @@ public class UserLogin extends JFrame {
 		String password = new String(passwordField.getPassword());
 		String sql = "SELECT pass, role, userid FROM benutzer WHERE email = ?";
 		try {
-			Connection conn = DatabaseConnection.getConnection();
+			Connection conn = DatabaseConnectionOld.getConnection();
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setString(1, email);
 			ResultSet rs = stmt.executeQuery();

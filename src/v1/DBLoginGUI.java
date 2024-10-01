@@ -55,10 +55,10 @@ public class DBLoginGUI extends JFrame {
 
         try {
             // Verbindungsversuch mit den Benutzereingaben
-			Connection connection = DatabaseConnection.getConnection(databaseName, username, password);
+			Connection connection = DatabaseConnectionOld.getConnection(databaseName, username, password);
 
             // Wenn die Verbindung erfolgreich ist, werden die Standardwerte gesetzt
-            DatabaseConnection.setCredentials(databaseName, username, password);
+            DatabaseConnectionOld.setCredentials(databaseName, username, password);
             
             // Erfolgsmeldung anzeigen
             JOptionPane.showMessageDialog(this, "Erfolgreich verbunden!", "Erfolg", JOptionPane.INFORMATION_MESSAGE);
