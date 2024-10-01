@@ -7,6 +7,14 @@ import java.sql.SQLException;
 
 public class TaskManager {
 
+	/*
+	 * TO-DO: dueDate, priority, isCompleted(boolean) hinzufügen Datenbank metaData
+	 * benutzen um spalten abzufragen sql und values builder implementieren Tasks
+	 * als klasse und dann in DB einfügen? -> weniger sql anfragen -> eine anfrage
+	 * um alle daten der tabelle in Klasse zu speichern -> eine anfrage um alle
+	 * updates am ende der sitzung hochzuladen -> zwischenspeicherung in Task-Klasse
+	 */
+
 	// Aufgabe erstellen
 	public void createTask(String title, String description, int projectId) {
 		String sql = "INSERT INTO task (title, description, projectid) VALUES (?, ?, ?)";
@@ -81,22 +89,21 @@ public class TaskManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	// Aufgabe aktualisieren
 	public void updateTask(int taskId, String newTitle, String newDescription, int newProjectId) {
-	    String sql = "UPDATE task SET title = ?, description = ?, projectid = ? WHERE taskid = ?";
-	    try (Connection conn = DatabaseConnection.getConnection();
-	         PreparedStatement stmt = conn.prepareStatement(sql)) {
-	        stmt.setString(1, newTitle);
-	        stmt.setString(2, newDescription);
-	        stmt.setInt(3, newProjectId);
-	        stmt.setInt(4, taskId);
-	        stmt.executeUpdate();
-	        System.out.println("Aufgabe aktualisiert!");
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+		String sql = "UPDATE task SET title = ?, description = ?, projectid = ? WHERE taskid = ?";
+		try (Connection conn = DatabaseConnection.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, newTitle);
+			stmt.setString(2, newDescription);
+			stmt.setInt(3, newProjectId);
+			stmt.setInt(4, taskId);
+			stmt.executeUpdate();
+			System.out.println("Aufgabe aktualisiert!");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-
 
 }
