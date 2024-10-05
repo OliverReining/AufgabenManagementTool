@@ -3,13 +3,15 @@ package v1;
 import java.awt.GridLayout;
 import javax.swing.*;
 
+import v2.User;
+
 @SuppressWarnings("serial")
 public class AdminModeFrame extends JFrame {
 	
-	private int userId;
+	User user;
 
-	public AdminModeFrame(int userId) {
-		this.setUserId(userId);
+	public AdminModeFrame(User currentUser) {
+		this.user = currentUser;
         setTitle("Admin Options");
         setSize(300, 200);
 		setLocationRelativeTo(null);
@@ -32,21 +34,13 @@ public class AdminModeFrame extends JFrame {
         JButton userModeButton = new JButton("User Login");
         userModeButton.addActionListener(e -> {
         	dispose();
-        	new UserGUI(userId).setVisible(true);
+        	new UserGUI(user).setVisible(true);
         });
         	
         panel.add(userModeButton);
         
         add(panel);
 		
-	}
-
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
 	}
 
 }

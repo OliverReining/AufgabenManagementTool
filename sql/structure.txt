@@ -1,0 +1,56 @@
+DROP DATABASE IF EXISTS ams;
+
+CREATE DATABASE ams;
+
+USE ams;
+
+CREATE TABLE benutzer (
+  userid varchar(6) NOT NULL PRIMARY KEY,
+  name varchar(255) NOT NULL,
+  vorname varchar(255) NOT NULL,
+  email varchar(255) NOT NULL,
+  tel VARCHAR(25) NULL,
+  pass varchar(50) NOT NULL DEFAULT 'pass123',
+  role varchar(20) NOT NULL DEFAULT 'user',
+  isProjectLead boolean DEFAULT FALSE,
+  hourlyRate DECIMAL(6,2)
+);
+
+CREATE TABLE project (
+  projectid int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  title varchar(255) NOT NULL,
+  description text DEFAULT NULL,
+  projectlead varchar(6) NOT NULL,
+  isCompleted boolean DEFAULT FALSE,
+  startDate DATE,
+  dueDate DATE,
+  taskCount int,
+  memberCount int,
+  FOREIGN KEY (projectlead) REFERENCES benutzer(userid)
+);
+
+CREATE TABLE task (
+  taskid int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  title varchar(255) NOT NULL,
+  description text DEFAULT NULL,
+  projectid int(11) NOT NULL,
+  dueDate date NOT NULL,
+  priority varchar(15) NOT NULL DEFAULT 'niedrig',
+  FOREIGN KEY (projectid) REFERENCES project(projectid),
+  isCompleted boolean DEFAULT FALSE,
+  plannedTime int,
+  isCritical boolean DEFAULT FALSE
+);
+
+CREATE TABLE task_user (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  taskid int(11) NOT NULL,
+  userid varchar(6) NOT NULL,
+  starttime timestamp NULL DEFAULT NULL,
+  endtime timestamp NULL DEFAULT NULL,
+  problems int(1) DEFAULT NULL,
+  commentar varchar(500) NOT NULL,
+  overtime boolean DEFAULT FALSE,
+  FOREIGN KEY (taskid) REFERENCES task(taskid),
+  FOREIGN KEY (userid) REFERENCES benutzer(userid)
+);

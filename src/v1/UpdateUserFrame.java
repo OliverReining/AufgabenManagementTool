@@ -6,18 +6,18 @@ import java.sql.*;
 @SuppressWarnings("serial")
 public class UpdateUserFrame extends JFrame {
 
-	private UserManager userManager = new UserManager();
-	private JTextField nameField;
-	private JTextField vornameField;
-	private JTextField emailField;
-	private JTextField passwordField;
-	private JTextField roleField;
-	private int userId;
+	UserManager_sqlQuery userManager = new UserManager_sqlQuery();
+	JTextField nameField;
+	JTextField vornameField;
+	JTextField emailField;
+	JTextField passwordField;
+	JTextField roleField;
+	int userId;
 
 	private void loadUserData(int userId) {
 		String sql = "SELECT name, vorname, email, pass, role FROM benutzer WHERE userid = ?";
 
-		try (Connection conn = DatabaseConnectionOld.getConnection();
+		try (Connection conn = DatabaseConnection_v1.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, userId);

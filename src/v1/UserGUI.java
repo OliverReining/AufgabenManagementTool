@@ -4,17 +4,16 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
+import v2.User;
+
 @SuppressWarnings("serial")
 public class UserGUI extends JFrame {
 
-	private int userId;
-	private Object[] userData;
-	private boolean isProjectLead = false;
+	User user;
 
-	public UserGUI(int userId) {
-		this.userId = userId;
-		this.userData = Analytics.showUserData(userId);
-		this.isProjectLead = Analytics.isProjectLead(userId);
+	public UserGUI(User currentUser) {
+		this.user = currentUser;
+		user.setProjectLead(Analytics_v1.isProjectLead(user.getUserId()));
 
 		setTitle("Benutzerübersicht");
 		setSize(530, 500);
@@ -38,7 +37,7 @@ public class UserGUI extends JFrame {
 		tabbedPane.addTab("Aufgaben", TasksOverview);
 
 		// falls ProjectLead, wird zusätzlicher Tab angezeigt
-		if (isProjectLead) {
+		if (user.isProjectLead()) {
 			JPanel projectLeadPanel = projectLeadPanel();
 			tabbedPane.add("Projektleitung", projectLeadPanel);
 		}
@@ -55,7 +54,7 @@ public class UserGUI extends JFrame {
 		nameLabel.setBounds(20, 20, 150, 25);
 		panel.add(nameLabel);
 
-		JLabel nameLabel2 = new JLabel(userData[1].toString());
+		JLabel nameLabel2 = new JLabel(user.getName());
 		nameLabel2.setBounds(150, 20, 150, 25);
 		panel.add(nameLabel2);
 
@@ -63,7 +62,7 @@ public class UserGUI extends JFrame {
 		vornameLabel.setBounds(20, 40, 150, 25);
 		panel.add(vornameLabel);
 
-		JLabel vornameLabel2 = new JLabel(userData[2].toString());
+		JLabel vornameLabel2 = new JLabel(user.getVorname());
 		vornameLabel2.setBounds(150, 40, 150, 25);
 		panel.add(vornameLabel2);
 
@@ -71,7 +70,7 @@ public class UserGUI extends JFrame {
 		emailLabel.setBounds(20, 60, 150, 25);
 		panel.add(emailLabel);
 
-		JLabel emailLabel2 = new JLabel(userData[3].toString());
+		JLabel emailLabel2 = new JLabel(user.getEmail());
 		emailLabel2.setBounds(150, 60, 150, 25);
 		panel.add(emailLabel2);
 
@@ -79,7 +78,7 @@ public class UserGUI extends JFrame {
 		projectsLabel.setBounds(20, 80, 150, 25);
 		panel.add(projectsLabel);
 
-		JLabel projectsLabel2 = new JLabel(String.valueOf(Analytics.getProjectCount(userId)));
+		JLabel projectsLabel2 = new JLabel(String.valueOf(Analytics_v1.getProjectCount(user.getUserId())));
 		projectsLabel2.setBounds(150, 80, 150, 25);
 		panel.add(projectsLabel2);
 
@@ -87,7 +86,7 @@ public class UserGUI extends JFrame {
 		taskLabel.setBounds(20, 100, 150, 25);
 		panel.add(taskLabel);
 
-		JLabel taskLabel2 = new JLabel(String.valueOf(Analytics.getTaskCount(userId)));
+		JLabel taskLabel2 = new JLabel(String.valueOf(Analytics_v1.getTaskCount(user.getUserId())));
 		taskLabel2.setBounds(150, 100, 150, 25);
 		panel.add(taskLabel2);
 
@@ -100,7 +99,7 @@ public class UserGUI extends JFrame {
 
 		// Spalten für die JTable erstellen und Daten hinzufügen
 		String[] columnNames = { "Projekt", "Anzahl Aufgaben", "Projektleiter" };
-		DefaultTableModel model = new DefaultTableModel(Analytics.getProjectNamesAndTaskCount(userId), columnNames);
+		DefaultTableModel model = new DefaultTableModel(Analytics_v1.getProjectNamesAndTaskCount(user.getUserId()), columnNames);
 		JTable table = new JTable(model);
 
 		// ScrollPane für die Tabelle hinzufügen
@@ -115,7 +114,7 @@ public class UserGUI extends JFrame {
 		panel.setLayout(new BorderLayout());
 
 		String[] columnNames = { "Titel", "Beschreibung", "Projektleiter" };
-		DefaultTableModel model = new DefaultTableModel(Analytics.getTaskInfo(userId), columnNames);
+		DefaultTableModel model = new DefaultTableModel(Analytics_v1.getTaskInfo(user.getUserId()), columnNames);
 		JTable table = new JTable(model);
 		JScrollPane scrollPane = new JScrollPane(table);
 		panel.add(scrollPane, BorderLayout.CENTER);
@@ -130,7 +129,7 @@ public class UserGUI extends JFrame {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		panel.add(tabbedPane);
 
-		Object[][] data = Analytics.getProjectNamesAndTaskCount(userId);
+		Object[][] data = Analytics_v1.getProjectNamesAndTaskCount(user.getUserId());
 
 		for (int i = 0; i < data.length; i++) {
 			String projectName = (String) data[i][0];
@@ -158,7 +157,7 @@ public class UserGUI extends JFrame {
 		panel.setLayout(new BorderLayout());
 		
 		String[] columnNames = { "Projekt", "Aufgabe", "Mitarbeiter"};
-		DefaultTableModel model = new DefaultTableModel(Analytics.getProjectTasks(userId), columnNames);
+		DefaultTableModel model = new DefaultTableModel(Analytics_v1.getProjectTasks(user.getUserId()), columnNames);
 		JTable table = new JTable(model);
 		JScrollPane scrollPane = new JScrollPane(table);
 		panel.add(scrollPane, BorderLayout.CENTER);

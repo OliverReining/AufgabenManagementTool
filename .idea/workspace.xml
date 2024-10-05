@@ -5,40 +5,47 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d622549a-394d-468d-9f75-986e316e19d2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/v2/Project.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/v2/SQL.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/v2/Task.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/v2/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/AdminGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/AdminGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/Analytics.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/Analytics.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/DBLoginGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/DBLoginGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/DatabaseConnection.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/ProjectManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/ProjectManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/TaskManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/AdminGUI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/AdminModeFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/AdminModeFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/Analytics.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/DBLoginGUI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/DataPrep.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/DatabaseConnectionOld.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/ProjectManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/TaskManagerOld.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/v1/UpdateUserFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/UpdateUserFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/UserGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/UserGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/UserLogin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/UserLogin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/UserManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/UserManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/maven/AufgabenmanagementTool/AufgabenmanagementTool/pom.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/maven/AufgabenmanagementTool/AufgabenmanagementTool/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/UserGUI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/UserLogin.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/UserManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/DatabaseConnection.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/Project.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/SQL.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/TaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/TaskManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/test/test.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/test/test.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/AdminGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/AdminGUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v1/AdminGUI.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/v1/AdminModeFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/AdminModeFrame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/Analytics.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/Analytics.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/DBLoginGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/DBLoginGUI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/DataPrep.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/DataPrep.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/DatabaseConnection.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/ProjectManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/ProjectManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/TaskManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v1/Analytics.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v1/DBLoginGUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v1/DataPrep.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v1/DatabaseConnectionOld.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v1/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v1/ProjectManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v1/TaskManagerOld.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/v1/UpdateUserFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/UpdateUserFrame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/UserGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/UserGUI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/UserLogin.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/UserLogin.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/UserManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/UserManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v1/UserGUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v1/UserLogin.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v1/UserManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/DatabaseConnection.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/Project.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/Project.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/SQL.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/Task.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/Task.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/TaskManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/TaskManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/User.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,21 +62,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "OliverReining"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;OliverReining&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/OliverReining/AufgabenManagemantTool.git",
-    "accountId": "2dac38eb-10da-4cf2-941c-7d4189297c70"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/OliverReining/AufgabenManagemantTool.git&quot;,
+    &quot;accountId&quot;: &quot;2dac38eb-10da-4cf2-941c-7d4189297c70&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2mphyhWVEmafYeY6Fkmr36rNRic" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -78,15 +85,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "kotlin-language-version-configured": "true",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="v2" />

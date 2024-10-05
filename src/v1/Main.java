@@ -1,6 +1,6 @@
 package v1;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 //// Admin-GUI
 public class Main {
@@ -12,7 +12,8 @@ public class Main {
 // User-GUI
 //public class Main {
 //	public static void main(String[] args) {
-//		SwingUtilities.invokeLater(() -> new UserGUI(5).setVisible(true)); // Öffnet die User-GUI
+//		User user = new User("olrei", "Reining", "Oliver", "oreining@email.com", "Passwort", "admin");
+//		SwingUtilities.invokeLater(() -> new UserGUI(user).setVisible(true)); // Öffnet die User-GUI
 //	}
 //}
 
@@ -20,7 +21,7 @@ public class Main {
 //public class Main {
 //	public static void main(String[] args) {
 //		// Zeigt den Login-Screen an
-//		SwingUtilities.invokeLater(() -> new DBLogin().setVisible(true));
+//		SwingUtilities.invokeLater(() -> new DBLoginGUI_v2().setVisible(true));
 //	}
 //}
 
