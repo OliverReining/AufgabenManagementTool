@@ -13,7 +13,7 @@ public class User {
 	// TODO Methode um die gehashten PW auszulesen und zu vergleichen
 	private String pass;
 	private String role; // TODO: weitere Rollen hinzufügen, basierend darauf zeigt GUI anderes
-	private boolean projectLead; // wenn ProjectLead eines aktuellen Projekt -> true 
+	private boolean projectLead; // wenn ProjectLead eines aktuellen Projekt -> true
 	private double hourlyRate; // StundenSatz des Nutzers
 
 	// Ab hier errechnete Daten die nicht aus DB kommen
@@ -33,6 +33,10 @@ public class User {
 	// aktuelle Projekte
 	// Projekte überfällig
 	// erledigte Projekte
+
+	public enum Role {
+		Developer, Junior_Dev, Senior_Dev, Shiftlead, Teamlead, Manager, Technican, DB_Admin, HR,
+	}
 
 	public User() {
 		// leerer Konstruktor
@@ -54,6 +58,11 @@ public class User {
 
 	@Override
 	public String toString() {
+		return getUserId() + "\n" + getName() + "\n " + getVorname() + "\n" + getEmail() + "\n" + getTel() + "\n"
+				+ getPass() + "\n" + getRole() + "\n" + isProjectLead() + "\n" + getHourlyRate();
+	}
+
+	public String getUserInfo() {
 		return getName() + ", " + getVorname() + "\n" + getEmail() + "\n" + getTel();
 	}
 

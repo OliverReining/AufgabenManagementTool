@@ -50,19 +50,19 @@ public class DatabaseConnection {
 	public void connect(String dynamicDbName, String dynamicUsername, String dynamicPassword, LogManager log)
 			throws SQLException {
 		this.dbName = dynamicDbName;
-		log.log("databasename set", Log.LogType.SUCCESS);
+		log.log("databasename set", Log.LogType.SUCCESS, Log.Manager.DB_CONNECT);
 		this.username = dynamicUsername;
-		log.log("username set", Log.LogType.SUCCESS);
+		log.log("username set", Log.LogType.SUCCESS, Log.Manager.DB_CONNECT);
 		this.password = dynamicPassword;
-		log.log("passwort set", Log.LogType.SUCCESS);
+		log.log("passwort set", Log.LogType.SUCCESS, Log.Manager.DB_CONNECT);
 
 		String dynamicUrl = BASE_URL + dbName;
 		conn = DriverManager.getConnection(dynamicUrl, username, password);
-		log.log("connected", Log.LogType.SUCCESS);
+		log.log("connected", Log.LogType.SUCCESS, Log.Manager.DB_CONNECT);
 		metaData = conn.getMetaData();
-		log.log("metadata set", Log.LogType.SUCCESS);
+		log.log("metadata set", Log.LogType.SUCCESS, Log.Manager.DB_CONNECT);
 		catalog = conn.getCatalog();
-		log.log("catalog set", Log.LogType.SUCCESS);
+		log.log("catalog set", Log.LogType.SUCCESS, Log.Manager.DB_CONNECT);
 	}
 
 	// Methode zum Abrufen der aktuellen Verbindung
@@ -74,10 +74,10 @@ public class DatabaseConnection {
 	public void closeConnection() {
 		if (conn != null) {
 			try {
-				log.log("Verbindung getrennt", Log.LogType.SUCCESS);
+				log.log("Verbindung getrennt", Log.LogType.SUCCESS, Log.Manager.DB_CONNECT);
 				conn.close();
 			} catch (SQLException e) {
-				log.log("Verbindung konnte nicht getrennt werden,\n" + e.getMessage(), Log.LogType.SUCCESS);
+				log.sqlExceptionLog(e, "Verbindung konnte nicht getrennt werden.", Log.Manager.DB_CONNECT);
 			}
 		}
 	}
@@ -92,49 +92,63 @@ public class DatabaseConnection {
 		return catalog;
 	}
 
-	public ResultSet getResultSet(String sql) {
-		try {
-			return rs = getConnection().prepareStatement(sql).executeQuery();
-		} catch (SQLException e) {
-			log.sqlExceptionLog(e, sql);
-			return null;
+	public ResultSet getResultSet(String sql) throws SQLException {
+
+		rs = getConnection().prepareStatement(sql).executeQuery();
+		if (rs == null) {
+			log.sqlExceptionLog(null, "ResultSet konnte nicht geladen werden.", Log.Manager.DB_CONNECT);
+			throw new SQLException("ResultSet konnte nicht geladen werden.");
+		}
+		return rs;
+	}
+
+	// Tabellennamen dynamisch finden (Case-Insensitive)
+	public String findTableName(String desiredTable) throws SQLException {
+		log.log("findTableName(" + desiredTable + ") gestartet.", Log.LogType.OPEN, Log.Manager.DB_CONNECT);
+		rs = metaData.getTables(null, null, "%", new String[] { "TABLE" });
+		String tableName = null;
+		switch (desiredTable) {
+		case "benutzer":
+		case "users":
+		case "nutzer":
+		case "project":
+		case "projects":
+		case "projekt":
+			while (rs.next()) {
+				tableName = rs.getString("TABLE_NAME");
+				if (tableName.equalsIgnoreCase(desiredTable)) {
+					return tableName;
+				}
+			}
+		default:
+			throw new SQLException("Tabelle nicht erkannt: " + tableName);
 		}
 	}
-	
-    // Tabellennamen dynamisch finden (Case-Insensitive)
-    public String findTableName(String desiredTableName) throws SQLException {
-        ResultSet rs = metaData.getTables(null, null, "%", new String[]{"TABLE"});
-        while (rs.next()) {
-            String tableName = rs.getString("TABLE_NAME");
-            if (tableName.equalsIgnoreCase(desiredTableName)) {
-                return tableName;
-            }
-        }
-        return null;
-    }
 
 	// Lister der Spaltennamen für eine ausgewählte Tabelle holen
-    public List<String> getColumnNames(String tableName) throws SQLException {
-        ResultSet rs = metaData.getColumns(null, null, tableName, null);
-        List<String> columnNames = new ArrayList<>();
-        while (rs.next()) {
-            columnNames.add(rs.getString("COLUMN_NAME"));
-        }
-        return columnNames;
-    }
+	public List<String> getColumnNames(String tableName) throws SQLException {
+		ResultSet rs = metaData.getColumns(null, null, tableName, null);
+		List<String> columnNames = new ArrayList<>();
+		while (rs.next()) {
+			columnNames.add(rs.getString("COLUMN_NAME"));
+		}
+		return columnNames;
+	}
 
 	// Typ der Spalte für eine ausgewählte Tabelle und Spalte holen
-	public String getColumnType(String selectedTable, String selectedColumn) {
-		try (ResultSet rs = metaData.getColumns(catalog, null, selectedTable, selectedColumn)) {
-			String columnType = null;
-			if (rs.next()) {
-				columnType = rs.getString("TYPE_NAME");
-			}
-			return columnType;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+	public String getColumnType(String selectedTable, String selectedColumn) throws SQLException {
+		if (rs == null) {
+			log.sqlExceptionLog(null, "Kein ResultSet geladen.", Log.Manager.WORKTIME_MANAGER);
+			throw new SQLException("Kein ResultSet geladen.");
+
 		}
+		rs = metaData.getColumns(catalog, null, selectedTable, selectedColumn);
+		String columnType = null;
+		if (rs.next()) {
+			columnType = rs.getString("TYPE_NAME");
+		}
+		return columnType;
+
 	}
 
 	// Anmeldeinformationen (DB-Name, Benutzername, Passwort) aktualisieren

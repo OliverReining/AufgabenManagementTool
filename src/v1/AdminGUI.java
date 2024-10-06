@@ -3,9 +3,8 @@ package v1;
 import javax.swing.*;
 import javax.swing.table.TableModel;
 
-import v2.DisplayProjectsFrame;
-import v2.DisplayTasksFrame;
-import v2.DisplayUserFrame;
+import v2.FrameDisplayProjects;
+import v2.FrameDisplayTasks;
 import v2.ProjectManager;
 import v2.Task;
 import v2.TaskManager;
@@ -127,8 +126,9 @@ public class AdminGUI extends JFrame {
 		// "Benutzer anzuzeigen" Button
 		JButton showUsersButton = new JButton("Benutzer anzeigen");
 		showUsersButton.setBounds(180, 140, 150, 30); // Position und Größe des Buttons.
-		showUsersButton.addActionListener(e -> new DisplayUserFrame().setVisible(true)); // Zeigt Benutzer an, wenn der Button
-																			// geklickt wird
+		showUsersButton.addActionListener(e -> {
+			
+		});
 		panel.add(showUsersButton);
 
 		// "Benutzer löschen" Button
@@ -237,7 +237,7 @@ public class AdminGUI extends JFrame {
 
 		JButton showProjectsButton = new JButton("Projekte anzeigen");
 		showProjectsButton.setBounds(180, 140, 150, 30);
-		showProjectsButton.addActionListener(e -> new DisplayProjectsFrame().setVisible(true));
+		showProjectsButton.addActionListener(e -> new FrameDisplayProjects().setVisible(true));
 		panel.add(showProjectsButton);
 
 		JButton deleteProjectButton = new JButton("Projekt löschen");
@@ -343,7 +343,7 @@ public class AdminGUI extends JFrame {
 
 		JButton showTasksButton = new JButton("Aufgaben anzeigen");
 		showTasksButton.setBounds(180, 140, 150, 30);
-		showTasksButton.addActionListener(e -> new DisplayTasksFrame().setVisible(true));
+		showTasksButton.addActionListener(e -> new FrameDisplayTasks().setVisible(true));
 		panel.add(showTasksButton);
 
 		JButton addUserToTaskButton = new JButton("Benutzer hinzufügen");

@@ -3,6 +3,8 @@ package v2;
 import java.time.*;
 import java.util.ArrayList;
 
+import v2.Task.Priority;
+
 public class Task {
 
 	private int taskId;
@@ -10,7 +12,7 @@ public class Task {
 	private String description;
 	private int projectId;
 	private LocalDate dueDate;
-	private String priority;
+	private Priority priority;
 	private boolean isCompleted;
 	private int plannedTime; // geschätzte Zeit in Stunden
 	private boolean isCritical; // Aufgabe kritisch für Erfolg des Projektes?
@@ -18,11 +20,17 @@ public class Task {
 	private int memberCount; // Anzahl der Mitarbeiter der Aufgabe
 	private ArrayList<String> TODOs;
 
+	// Wenn ich weiß wie ich das gescheit von der DB umgewandelt bekomme dann mach
+	// ich das so
+	public enum Priority {
+		none, low, average, high, very_high, overdue
+	}
+
 	public Task() {
 		// leerer Konstruktor
 	}
 
-	public Task(int taskId, String title, String description, int projectId, LocalDate dueDate, String priority,
+	public Task(int taskId, String title, String description, int projectId, LocalDate dueDate, Priority priority,
 			boolean isCompleted, int plannedTime, boolean isCritical) {
 		setTaskId(taskId);
 		setTitle(title);
@@ -84,14 +92,6 @@ public class Task {
 		this.dueDate = dueDate;
 	}
 
-	public String getPriority() {
-		return priority;
-	}
-
-	public void setPriority(String priority) {
-		this.priority = priority;
-	}
-
 	public int getPlannedTime() {
 		return plannedTime;
 	}
@@ -130,6 +130,57 @@ public class Task {
 
 	public void setTODOs(ArrayList<String> tODOs) {
 		TODOs = tODOs;
+	}
+
+	public Priority getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Priority priority) {
+		this.priority = priority;
+	}
+
+	// Methode um die Priority in einen String zu wandeln (für DB-Query)
+	public String priorityToString(Priority priority) {
+		switch (priority) {
+		case none:
+			return "keine";
+		case low:
+			return "niedrig";
+		case average:
+			return "mittel";
+		case high:
+			return "hoch";
+		case very_high:
+			return "sehr hoch";
+		case overdue:
+			return "überfällig";
+		default:
+			return null;
+		}
+	}
+
+	// Methode um den Priority-String aus der DB in eine Priority umzuwandeln
+	public Priority toPriority(String priorityString) {
+		/*
+		 * none, low, average, high, very_high, overdue,
+		 */
+		switch (priorityString) {
+		case "keine":
+			return Task.Priority.none;
+		case "niedrig":
+			return Task.Priority.low;
+		case "mittel":
+			return Task.Priority.average;
+		case "hoch":
+			return Task.Priority.high;
+		case "sehr hoch":
+			return Task.Priority.very_high;
+		case "überfällig":
+			return Task.Priority.overdue;
+		default:
+			return null;
+		}
 	}
 
 }

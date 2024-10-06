@@ -62,22 +62,20 @@ public class DBLoginGUI extends JFrame {
 			return;
 		}
 
+		// Verbindungsversuch mit den Benutzereingaben
 		try {
-			// Verbindungsversuch mit den Benutzereingaben
 			dbConnect.connect(databaseName, username, password, log);
 
 			// Erfolgsmeldung anzeigen
-			log.log("Verbindung zur Datenbank wurde hergestellt. -" + username, Log.LogType.SUCCESS);
+			log.log("Verbindung zur Datenbank wurde hergestellt. --" + username, Log.LogType.SUCCESS, Log.Manager.DB_CONNECT);
 
 			// Schließen des Login-Fensters
 			dispose();
-			new FullScreenGUI(dbConnect, log).setVisible(true);
-
+			new GUIFullScreen(dbConnect, log).setVisible(true);
 		} catch (SQLException e) {
-			// Fehlermeldung anzeigen, wenn die Verbindung fehlschlägt
-			log.log("Verbindung zur Datenbank fehlgeschlagen.", Log.LogType.ERROR);
-			log.sqlExceptionLog(e,"");
-			log.saveLogs();
+			// Fehlermeldung loggen, wenn die Verbindung fehlschlägt
+			log.sqlExceptionLog(e, "Verbindung zur Datenbank fehlgeschlagen.", Log.Manager.DB_CONNECT);
+			throw new RuntimeException(e);
 		}
 	}
 }

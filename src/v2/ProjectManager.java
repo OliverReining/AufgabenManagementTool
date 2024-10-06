@@ -14,6 +14,7 @@ public class ProjectManager {
 	private ArrayList<Project> projects; // Liste aller Projekte, die in der Anwendung verwendet werden
 	private DatabaseConnection dbConnect; // Verbindung zur Datenbank
 	private LogManager log; // LogManager zum Protokollieren von Informationen und Fehlern
+	String desiredTable = "project";
 
 	// Konstruktoren
 	public ProjectManager() {
@@ -36,9 +37,8 @@ public class ProjectManager {
 	// der lokalen Project-Liste hinzu
 	private void getProjectsFromDB() {
 		projects = new ArrayList<>();
-		String table = "project";
-		String sql = "SELECT * FROM " + table;
-		log.log("Versuche '" + sql + "' auszuführen...", Log.LogType.INFO);
+		String sql = "SELECT * FROM " + desiredTable;
+		log.log("Versuche '" + sql + "' auszuführen...", Log.LogType.INFO, Log.Manager.PROJECT_MANAGER);
 
 		try (ResultSet rs = dbConnect.getConnection().prepareStatement(sql).executeQuery()) {
 			while (rs.next()) {
@@ -49,9 +49,10 @@ public class ProjectManager {
 						rs.getInt("taskCount"), rs.getInt("memberCount"));
 				projects.add(project); // Projekt zur lokalen Liste hinzufügen
 			}
+			log.log(projects.size() + " Projekte gefunden.", Log.LogType.SUCCESS, Log.Manager.PROJECT_MANAGER);
 			setProjects(projects); // Liste lokal speichern
 		} catch (SQLException e) {
-			log.sqlExceptionLog(e, sql); // Fehler protokollieren
+			log.sqlExceptionLog(e, sql, Log.Manager.PROJECT_MANAGER); // Fehler protokollieren
 		}
 	}
 
@@ -60,10 +61,9 @@ public class ProjectManager {
 		for (Project project : projects) {
 			if (project.getProjectId() == projectId) {
 				return project; // Projekt gefunden und zurückgegeben
-			} else {
-				log.log("Project-ID nicht gefunden", Log.LogType.ERROR);
 			}
 		}
+		log.log("Project-ID nicht gefunden", Log.LogType.ERROR, Log.Manager.PROJECT_MANAGER);
 		return null; // Kein Projekt gefunden
 	}
 

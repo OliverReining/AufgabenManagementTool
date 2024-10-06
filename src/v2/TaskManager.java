@@ -4,6 +4,8 @@ import java.sql.*;
 import java.time.*;
 import java.util.*;
 
+import v2.Task.Priority;
+
 //Manager-Klasse für Aufgaben:
 //Verwaltet Aufgaben über eine ArrayList<Task> und ermöglicht Interaktionen mit der Datenbank
 //Diese Klasse ist verantwortlich für das Hinzufügen, Entfernen, Aktualisieren und Abrufen von Aufgaben
@@ -38,16 +40,24 @@ public class TaskManager {
 	public void getTasksFromDB() {
 		tasks = new ArrayList<>();
 		String sql = "SELECT * FROM task";
-		log.log("Versuche '" + sql + "' auszuführen...", Log.LogType.INFO);
+		log.log("Versuche '" + sql + "' auszuführen...", Log.LogType.INFO, Log.Manager.TASK_MANAGER);
 
 		try (ResultSet rs = dbConnect.getConnection().prepareStatement(sql).executeQuery()) {
 			while (rs.next()) {
 				// Erstellen eines neuen Task-Objekts basierend auf den DB-Daten
-				Task task = new Task(rs.getInt("taskid"), rs.getString("title"), rs.getString("description"),
-						rs.getInt("projectid"), rs.getDate("dueDate").toLocalDate(), rs.getString("priority"),
-						rs.getBoolean("isCompleted"), rs.getInt("plannedTime"), rs.getBoolean("isCritical"));
+				Task task = new Task();
+				task.setTaskId(rs.getInt("taskid"));
+				task.setTitle(rs.getString("title"));
+				task.setDescription(rs.getString("description"));
+				task.setProjectId(rs.getInt("projectid"));
+				task.setDueDate(rs.getDate("dueDate").toLocalDate());
+				task.setPriority(task.toPriority(rs.getString("priority")));
+				task.setCompleted(rs.getBoolean("isCompleted"));
+				task.setPlannedTime(rs.getInt("plannedTime"));
+				task.setCritical(rs.getBoolean("isCritical"));
 				tasks.add(task); // Aufgabe zur lokalen Liste hinzufügen
 			}
+			log.log(tasks.size() + " Aufgaben gefunden.", Log.LogType.SUCCESS, Log.Manager.TASK_MANAGER);
 			setTasks(tasks); // Liste lokal speichern
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -56,15 +66,15 @@ public class TaskManager {
 
 	// Methode um eine Aufgabe anhand ihrer ID zu finden
 	public Task getTaskById(int taskId) {
-		Task currentTask = null;
+		// Schleife durch alle Task in der TaskList
 		for (Task task : tasks) {
-			if (task.getTaskId() == taskId) {
-				return task; // Aufgabe gefunden und zurückgegeben
-			} else {
-				log.log("Task-ID nicht gefunden", Log.LogType.ERROR);
+			// wenn TaskID übereinstimmt wird sie zurückgegeben
+			if (taskId == task.getTaskId()) {
+				return task; // Task gefunden und zurückgegeben
 			}
 		}
-		return currentTask; // Kein Task gefunden
+		log.log("TaskID konnte nicht gefunden werden", Log.LogType.ERROR, Log.Manager.TASK_MANAGER);
+		return null; // Kein Task gefunden
 	}
 
 	// Methode zum Hinzufügen einer neuen Aufgabe zur Liste
@@ -75,7 +85,7 @@ public class TaskManager {
 	}
 
 	// Methode zum Erstellen einer neuen Aufgabe und Hinzufügen zur Liste
-	public void createTask(String title, String description, int projectId, LocalDate dueDate, String priority,
+	public void createTask(String title, String description, int projectId, LocalDate dueDate, Priority priority,
 			boolean isCompleted) {
 		Task task = new Task(); // Neuer Task initialisieren und Parameter setzen
 		task.setTitle(title);

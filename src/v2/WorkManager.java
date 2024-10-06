@@ -50,7 +50,7 @@ public class WorkManager {
 		times = new ArrayList<>();
 		String sql = "SELECT * FROM task_user;";
 
-		log.log("Versuche '" + sql + "' auszuführen...", Log.LogType.INFO);
+		log.log("Versuche '" + sql + "' auszuführen...", Log.LogType.INFO, Log.Manager.WORKTIME_MANAGER);
 
 		try (ResultSet rs = dbConnect.getConnection().prepareStatement(sql).executeQuery()) {
 			while (rs.next()) {
@@ -67,9 +67,10 @@ public class WorkManager {
 				Worktime worktime = new Worktime(id, task, user, startTime, endTime, problems, comment, overtime);
 				times.add(worktime); // Worktime zur Liste hinzufügen
 			}
+			log.log(times.size()+" Arbeitszeiten gefunden", Log.LogType.SUCCESS, Log.Manager.WORKTIME_MANAGER);
 			setTimes(times); // Liste lokal speichern
 		} catch (SQLException e) {
-			log.sqlExceptionLog(e, sql); // Fehler protokollieren
+			log.sqlExceptionLog(e, sql, Log.Manager.WORKTIME_MANAGER); // Fehler protokollieren
 		}
 	}
 

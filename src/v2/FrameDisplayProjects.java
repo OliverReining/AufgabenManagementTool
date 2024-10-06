@@ -3,11 +3,11 @@ package v2;
 import java.awt.*;
 import javax.swing.*;
 
-public class DisplayProjectsFrame extends JFrame {
+public class FrameDisplayProjects extends JFrame {
 
 	private ProjectManager manager = new ProjectManager();
 
-	public DisplayProjectsFrame() {
+	public FrameDisplayProjects() {
 		setTitle("Projektübersicht");
 		setSize(650, 400);
 		setLocationRelativeTo(null);

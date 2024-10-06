@@ -4,11 +4,11 @@ import java.awt.*;
 import java.util.*;
 import javax.swing.*;
 
-public class DisplayTasksFrame extends JFrame {
+public class FrameDisplayTasks extends JFrame {
 
 	private TaskManager manager = new TaskManager();
 
-	public DisplayTasksFrame() {
+	public FrameDisplayTasks() {
 		ArrayList<Task> tasks = manager.getTasks();
 		setTitle("Aufgabenübersicht");
 		setSize(650, 400);

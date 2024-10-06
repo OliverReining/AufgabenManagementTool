@@ -27,6 +27,42 @@ INSERT INTO `benutzer` (`userid`, `name`, `vorname`, `email`, `pass`, `role`, `i
 ('annfie', 'Field', 'Anna', 'afield@email.com', 'pass123', 'user', 0, 22.50),
 ('kevrod', 'Rodriguez', 'Kevin', 'krodriguez@email.com', 'pass123', 'Developer', 0, 36.50);
 
+UPDATE benutzer
+SET tel = CASE
+WHEN	userid	=	'alejoh'	THEN	'+69 69-1312-1'
+WHEN	userid	=	'annfie'	THEN	'+69 69-1312-2'
+WHEN	userid	=	'benjam'	THEN	'+69 69-1312-3'
+WHEN	userid	=	'chimil'	THEN	'+69 69-1312-4'
+WHEN	userid	=	'davgre'	THEN	'+69 69-1312-5'
+WHEN	userid	=	'emmsmi'	THEN	'+69 69-1312-6'
+WHEN	userid	=	'frejon'	THEN	'+69 69-1312-7'
+WHEN	userid	=	'gramar'	THEN	'+69 69-1312-8'
+WHEN	userid	=	'hanlee'	THEN	'+69 69-1312-9'
+WHEN	userid	=	'isamar'	THEN	'+69 69-1312-0'
+WHEN	userid	=	'jacsmi'	THEN	'+69 69-1312-1'
+WHEN	userid	=	'katwil'	THEN	'+69 69-1312-2'
+WHEN	userid	=	'kevrod'	THEN	'+69 69-1312-3'
+WHEN	userid	=	'klabac'	THEN	'+69 69-1312-4'
+WHEN	userid	=	'lialop'	THEN	'+69 69-1312-5'
+WHEN	userid	=	'luknow'	THEN	'+69 69-1312-6'
+WHEN	userid	=	'miatur'	THEN	'+69 69-1312-7'
+WHEN	userid	=	'noawhi'	THEN	'+69 69-1312-8'
+WHEN	userid	=	'olirei'	THEN	'+69 69-1312-9'
+WHEN	userid	=	'olisan'	THEN	'+69 69-1312-0'
+WHEN	userid	=	'paujoh'	THEN	'+69 69-1312-1'
+WHEN	userid	=	'petwer'	THEN	'+69 69-1312-2'
+WHEN	userid	=	'quikin'	THEN	'+69 69-1312-3'
+WHEN	userid	=	'racsco'	THEN	'+69 69-1312-4'
+WHEN	userid	=	'samcla'	THEN	'+69 69-1312-5'
+WHEN	userid	=	'sarhil'	THEN	'+69 69-1312-6'
+WHEN	userid	=	'tomrob'	THEN	'+69 69-1312-7'
+
+END
+WHERE userid IN ('alejoh', 'annfie', 'benjam', 'chimil', 'davgre', 'emmsmi', 'frejon', 'gramar', 'hanlee', 'isamar', 
+'jacsmi', 'katwil', 'kevrod', 'klabac', 'lialop', 'luknow', 'miatur', 'noawhi', 'olirei', 'olisan', 'paujoh', 
+'petwer', 'quikin', 'racsco', 'samcla', 'sarhil', 'tomrob');
+
+
 
 
 INSERT INTO `project` (`projectid`, `title`, `description`, `projectlead`, `isCompleted`, `startDate`, `dueDate`, `taskCount`, `memberCount`) VALUES

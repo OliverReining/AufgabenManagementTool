@@ -21,8 +21,8 @@ public class LogManager {
 	}
 
 	// Nachricht loggen
-	public void log(String message, Log.LogType type) {
-		Log log = new Log(message, type);
+	public void log(String message, Log.LogType type, Log.Manager manager) {
+		Log log = new Log(message, type, manager);
 		logMessages.add(log);
 
 		if (displayArea != null) {
@@ -30,9 +30,45 @@ public class LogManager {
 		}
 	}
 
-	public void sqlExceptionLog(SQLException e, String sql) {
-		Log log = new Log(sql + " konnte nicht ausgeführt werden\n" + e.getErrorCode() + "\n" + e.getMessage(),
-				Log.LogType.ERROR);
+	// SQL Exception Log erstellen
+	public void sqlExceptionLog(SQLException e, String message, Log.Manager manager) {
+
+		if (e == null && message == null) {
+			Log log = new Log("Anfrage konnte nicht ausgeführt werden.", Log.LogType.SQLEXCEPTION, manager);
+			logMessages.add(log);
+
+			if (displayArea != null) {
+				appendToDisplayArea(log);
+			}
+		} else if (e == null) {
+			Log log = new Log(message, Log.LogType.SQLEXCEPTION, manager);
+			logMessages.add(log);
+
+			if (displayArea != null) {
+				appendToDisplayArea(log);
+			}
+		} else if (message == null) {
+			Log log = new Log("Anfrage konnte nicht ausgeführt werden\n" + e.getErrorCode() + "\n" + e.getMessage(),
+					Log.LogType.SQLEXCEPTION, manager);
+			logMessages.add(log);
+
+			if (displayArea != null) {
+				appendToDisplayArea(log);
+			}
+		} else if (e != null && message != null) {
+			Log log = new Log(message + "\n" + e.getErrorCode() + "\n" + e.getMessage(), Log.LogType.SQLEXCEPTION,
+					manager);
+			logMessages.add(log);
+
+			if (displayArea != null) {
+				appendToDisplayArea(log);
+			}
+		}
+	}
+
+	// Erfolgslog erstellen
+	public void successLog(String event, Log.Manager manager) {
+		Log log = new Log(event + " erfolgreich", Log.LogType.SUCCESS, manager);
 		logMessages.add(log);
 
 		if (displayArea != null) {
@@ -40,17 +76,13 @@ public class LogManager {
 		}
 	}
 
-	public void successLog(String event) {
-		Log log = new Log(event + " erfolgreich", Log.LogType.SUCCESS);
-		logMessages.add(log);
-
-		if (displayArea != null) {
-			appendToDisplayArea(log);
+	// Standart Error Log
+	public void errorLog(String message, Log.Manager manager) {
+		if (message == null) {
+			Log log = new Log("FEHLER!", Log.LogType.ERROR, manager);
+			logMessages.add(log);
 		}
-	}
-
-	public void notFoundLog(String item) {
-		Log log = new Log(item + " nicht gefunden.", Log.LogType.ERROR);
+		Log log = new Log(message, Log.LogType.ERROR, manager);
 		logMessages.add(log);
 
 		if (displayArea != null) {
@@ -103,10 +135,10 @@ public class LogManager {
 		try {
 			Path filePath = Paths.get(directory, finalFileName);
 			Files.write(filePath, getLogsAsString().getBytes(), StandardOpenOption.CREATE);
-			JOptionPane.showMessageDialog(null, "Log gespeichert: " + filePath.toString());
+//			JOptionPane.showMessageDialog(null, "Log gespeichert: " + filePath.toString());
 		} catch (IOException e) {
-			log("Log konnte nicht gespeichert", Log.LogType.ERROR);
-			log(e.getMessage(), Log.LogType.INFO);
+			errorLog("Logs konnten nicht gespeichert", Log.Manager.LOG_MANAGER);
+			log(e.getMessage(), Log.LogType.INFO, Log.Manager.LOG_MANAGER);
 		}
 
 	}
