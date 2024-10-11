@@ -25,19 +25,19 @@ public class TaskManager {
 
 	public TaskManager(DatabaseConnection dbConnect) {
 		this.dbConnect = dbConnect; // Setzt die Datenbankverbindung
-		getTasksFromDB(); // Lädt Aufgaben aus der Datenbank
+		getAllTasks(); // Lädt Aufgaben aus der Datenbank
 	}
 
 	public TaskManager(DatabaseConnection dbConnect, LogManager log) {
 		this.log = log; // Setzt LogManager
 		this.dbConnect = dbConnect; // Setzt die Datenbankverbindung
-		getTasksFromDB(); // Lädt Aufgaben aus der Datenbank
+		getAllTasks(); // Lädt Aufgaben aus der Datenbank
 	}
 
 	// Methode zum Laden der Aufgaben aus der Datenbank
 	// Liest alle Aufgaben aus der Tabelle "task" in der Datenbank und fügt sie der
 	// lokalen Task-Liste hinzu
-	public void getTasksFromDB() {
+	public void getAllTasks() {
 		tasks = new ArrayList<>();
 		String sql = "SELECT * FROM task";
 		log.log("Versuche '" + sql + "' auszuführen...", Log.LogType.INFO, Log.Manager.TASK_MANAGER);

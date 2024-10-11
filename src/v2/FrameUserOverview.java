@@ -15,8 +15,8 @@ public class FrameUserOverview extends JFrame {
 	private LogManager log;
 	private User user;
 
-	public FrameUserOverview(User user, LogManager logManager, UserManager uMan) {
-		this.log = logManager;
+	public FrameUserOverview(User user, LogManager log, UserManager uMan) {
+		this.log = log;
 		this.uMan = uMan;
 		this.user = user;
 
@@ -24,16 +24,6 @@ public class FrameUserOverview extends JFrame {
 		setTitle("Nutzerübersicht");
 		setSize(650, 400);
 		setLocationRelativeTo(null);
-
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-
-		UserTableModel model = new UserTableModel(uMan.getUsers());
-		JTable table = new JTable(model);
-		JScrollPane scrollPane = new JScrollPane(table);
-
-		panel.add(scrollPane);
-		add(panel);
 
 	}
 

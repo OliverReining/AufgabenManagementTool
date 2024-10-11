@@ -3,8 +3,8 @@ package v1;
 import javax.swing.*;
 import javax.swing.table.TableModel;
 
-import v2.FrameDisplayProjects;
-import v2.FrameDisplayTasks;
+import v2.FrameProjectOverview;
+import v2.FrameTaskOverview;
 import v2.ProjectManager;
 import v2.Task;
 import v2.TaskManager;
@@ -127,7 +127,7 @@ public class AdminGUI extends JFrame {
 		JButton showUsersButton = new JButton("Benutzer anzeigen");
 		showUsersButton.setBounds(180, 140, 150, 30); // Position und Größe des Buttons.
 		showUsersButton.addActionListener(e -> {
-			
+
 		});
 		panel.add(showUsersButton);
 
@@ -237,7 +237,9 @@ public class AdminGUI extends JFrame {
 
 		JButton showProjectsButton = new JButton("Projekte anzeigen");
 		showProjectsButton.setBounds(180, 140, 150, 30);
-		showProjectsButton.addActionListener(e -> new FrameDisplayProjects().setVisible(true));
+		showProjectsButton.addActionListener(e -> {
+
+		});
 		panel.add(showProjectsButton);
 
 		JButton deleteProjectButton = new JButton("Projekt löschen");
@@ -343,7 +345,9 @@ public class AdminGUI extends JFrame {
 
 		JButton showTasksButton = new JButton("Aufgaben anzeigen");
 		showTasksButton.setBounds(180, 140, 150, 30);
-		showTasksButton.addActionListener(e -> new FrameDisplayTasks().setVisible(true));
+		showTasksButton.addActionListener(e -> {
+
+		});
 		panel.add(showTasksButton);
 
 		JButton addUserToTaskButton = new JButton("Benutzer hinzufügen");

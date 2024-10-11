@@ -31,33 +31,9 @@ public class LogManager {
 	}
 
 	// SQL Exception Log erstellen
-	public void sqlExceptionLog(SQLException e, String message, Log.Manager manager) {
-
-		if (e == null && message == null) {
-			Log log = new Log("Anfrage konnte nicht ausgeführt werden.", Log.LogType.SQLEXCEPTION, manager);
-			logMessages.add(log);
-
-			if (displayArea != null) {
-				appendToDisplayArea(log);
-			}
-		} else if (e == null) {
-			Log log = new Log(message, Log.LogType.SQLEXCEPTION, manager);
-			logMessages.add(log);
-
-			if (displayArea != null) {
-				appendToDisplayArea(log);
-			}
-		} else if (message == null) {
-			Log log = new Log("Anfrage konnte nicht ausgeführt werden\n" + e.getErrorCode() + "\n" + e.getMessage(),
-					Log.LogType.SQLEXCEPTION, manager);
-			logMessages.add(log);
-
-			if (displayArea != null) {
-				appendToDisplayArea(log);
-			}
-		} else if (e != null && message != null) {
-			Log log = new Log(message + "\n" + e.getErrorCode() + "\n" + e.getMessage(), Log.LogType.SQLEXCEPTION,
-					manager);
+	public void sqlExceptionLog(SQLException e, Log.Manager manager) {
+		if (e == null) {
+			Log log = new Log("FEHLER!", Log.LogType.SQLEXCEPTION, manager);
 			logMessages.add(log);
 
 			if (displayArea != null) {
@@ -68,7 +44,7 @@ public class LogManager {
 
 	// Erfolgslog erstellen
 	public void successLog(String event, Log.Manager manager) {
-		Log log = new Log(event + " erfolgreich", Log.LogType.SUCCESS, manager);
+		Log log = new Log(event + ", Erfolgreich!", Log.LogType.SUCCESS, manager);
 		logMessages.add(log);
 
 		if (displayArea != null) {

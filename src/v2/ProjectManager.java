@@ -1,6 +1,7 @@
 package v2;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.*;
 
 //Manager-Klasse für Projekte:
@@ -14,7 +15,8 @@ public class ProjectManager {
 	private ArrayList<Project> projects; // Liste aller Projekte, die in der Anwendung verwendet werden
 	private DatabaseConnection dbConnect; // Verbindung zur Datenbank
 	private LogManager log; // LogManager zum Protokollieren von Informationen und Fehlern
-	String desiredTable = "project";
+	private UserManager uMan;
+	private String desiredTable = "project";
 
 	// Konstruktoren
 	public ProjectManager() {
@@ -26,9 +28,10 @@ public class ProjectManager {
 		getProjectsFromDB(); // Lädt Projekte aus der Datenbank
 	}
 
-	public ProjectManager(DatabaseConnection dbConnect, LogManager log) {
-		this.log = log; // Setzt LogManager
+	public ProjectManager(DatabaseConnection dbConnect, LogManager log, UserManager uMan) {
 		this.dbConnect = dbConnect; // Setzt die Datenbankverbindung
+		this.log = log; // Setzt LogManager
+		this.uMan = uMan;
 		getProjectsFromDB(); // Lädt Projekte aus der Datenbank
 	}
 
@@ -43,17 +46,29 @@ public class ProjectManager {
 		try (ResultSet rs = dbConnect.getConnection().prepareStatement(sql).executeQuery()) {
 			while (rs.next()) {
 				// Erstellen eines neuen Project-Objekts basierend auf den DB-Daten
-				Project project = new Project(rs.getInt("projectid"), rs.getString("title"),
-						rs.getString("description"), rs.getString("projectlead"), rs.getBoolean("isCompleted"),
-						rs.getDate("startDate").toLocalDate(), rs.getDate("dueDate").toLocalDate(),
-						rs.getInt("taskCount"), rs.getInt("memberCount"));
-				projects.add(project); // Projekt zur lokalen Liste hinzufügen
+				Project p = new Project();
+				p.setProjectId(rs.getInt("projectid"));
+				p.setTitle(rs.getString("title"));
+				p.setDescription(rs.getString("description"));
+				p.setProjectLead(uMan.getUserById(rs.getString("projectlead")));
+				p.setCompleted(rs.getBoolean("isCompleted"));
+				p.setStartDate(rs.getDate("startDate").toLocalDate());
+				p.setDueDate(rs.getDate("dueDate").toLocalDate());
+				p.setMemberCount(rs.getInt("taskCount"));
+				p.setTaskCount(rs.getInt("memberCount"));
+				projects.add(p); // Projekt zur lokalen Liste hinzufügen
 			}
 			log.log(projects.size() + " Projekte gefunden.", Log.LogType.SUCCESS, Log.Manager.PROJECT_MANAGER);
 			setProjects(projects); // Liste lokal speichern
 		} catch (SQLException e) {
-			log.sqlExceptionLog(e, sql, Log.Manager.PROJECT_MANAGER); // Fehler protokollieren
+			log.sqlExceptionLog(e, Log.Manager.PROJECT_MANAGER); // Fehler protokollieren
+			throw new RuntimeException(e);
 		}
+	}
+
+	// Methode zum Erstellen eines Kontakt-Strings für den Projektleiter
+	public String createProjectLeadContact(User user) {
+		return user.getUserInfo(); // Gibt die String-Repräsentation des Benutzers (Projektleiter) zurück
 	}
 
 	// Methode um ein Projekt anhand seiner ID zu finden
@@ -67,12 +82,19 @@ public class ProjectManager {
 		return null; // Kein Projekt gefunden
 	}
 
-	// Methode zum Hinzufügen eines neuen Projekts zur Liste
 	public void addProject(Project project) {
 		projects.add(project); // Projekt zur lokalen Liste hinzufügen
 		// TODO: SQL-INSERT-Anweisung hier implementieren, um das Projekt in die
 		// Datenbank einzufügen
 	}
+
+	// TODO insertProject(Project project)
+	// - Methode um ein neues Projekt in die Datenbank einzufügen
+	// - SQL-INSERT-Befehl vorbereiten, um die Projektdaten in die Datenbank zu
+	// schreiben
+	// - Projekt in die lokale ArrayList hinzufügen
+	// - Exception Handling für mögliche Datenbankfehler hinzufügen
+	// Methode zum Hinzufügen eines neuen Projekts zur Liste
 
 	// Methode zum Entfernen eines Projekts aus der Liste
 	public void removeProject(Project project) {
@@ -87,10 +109,11 @@ public class ProjectManager {
 		removeProject(getProjectById(projectId)); // Sucht das Projekt und entfernt es
 	}
 
-	// Methode zum Erstellen eines Kontakt-Strings für den Projektleiter
-	public String createProjectLeadContact(User user) {
-		return user.toString(); // Gibt die String-Repräsentation des Benutzers (Projektleiter) zurück
-	}
+	// TODO removeProject(Project project)
+	// - Methode um ein Projekt aus der Datenbank zu löschen
+	// - SQL-DELETE-Befehl vorbereiten, um das Projekt anhand seiner ID zu entfernen
+	// - Projekt aus der lokalen ArrayList entfernen
+	// - Exception Handling hinzufügen, falls das Löschen fehlschlägt
 
 	// TODO Methode um Projektdaten zu aktualisieren und in die Datenbank
 	// hochzuladen
@@ -108,9 +131,23 @@ public class ProjectManager {
 	// Fälligkeitsdatum überschritten) abzurufen
 	public ArrayList<Project> getOverdueProjects() {
 		ArrayList<Project> overdueProjects = new ArrayList<>();
-		// TODO: SQL-SELECT-Anweisung hier implementieren, um überfällige Projekte zu
-		// finden
+		for (Project project : projects) {
+			if (!project.isCompleted() && project.getDueDate().isAfter(LocalDate.now())) {
+				overdueProjects.add(project);
+			}
+		}
 		return overdueProjects;
+	}
+
+	// Gibt alle Projekte aus die nicht Completed sind
+	public ArrayList<Project> getCurrentProjects() {
+		ArrayList<Project> currentProjects = new ArrayList<>();
+		for (Project project : projects) {
+			if (!project.isCompleted()) {
+				currentProjects.add(project);
+			}
+		}
+		return currentProjects;
 	}
 
 	// TODO Methode um den Fortschritt eines Projekts in Prozenten zurückzugeben
@@ -128,19 +165,6 @@ public class ProjectManager {
 		// multiplizieren
 		return 0.0; // Platzhalter
 	}
-
-	// TODO addProject(Project project)
-	// - Methode um ein neues Projekt in die Datenbank einzufügen
-	// - SQL-INSERT-Befehl vorbereiten, um die Projektdaten in die Datenbank zu
-	// schreiben
-	// - Projekt in die lokale ArrayList hinzufügen
-	// - Exception Handling für mögliche Datenbankfehler hinzufügen
-
-	// TODO removeProject(Project project)
-	// - Methode um ein Projekt aus der Datenbank zu löschen
-	// - SQL-DELETE-Befehl vorbereiten, um das Projekt anhand seiner ID zu entfernen
-	// - Projekt aus der lokalen ArrayList entfernen
-	// - Exception Handling hinzufügen, falls das Löschen fehlschlägt
 
 	// TODO updateProject(Project project)
 	// - Methode um Projektdaten in der Datenbank zu aktualisieren

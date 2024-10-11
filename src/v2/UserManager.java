@@ -17,30 +17,32 @@ public class UserManager {
 	private LogManager log; // LogManager zum Protokollieren von Informationen und Fehlern
 	// Manager Enum des Logs initialisieren um nicht jedes mal den Text zu schreiben
 	private Manager managerType = Log.Manager.USER_MANAGER;
-	// hier lokal initialisieren, damit alle Anfragen mit der gleichen Tabelle zu
-	// starten muss nicht in jeder neu schreiben
-	// einfacher zu ändern wenn sich in der DB was ändert
+
+	// desiredTable Lokal auf "benutzer" gesetzt um bei änderung in DB nur 1
+	// Variable zu ändern
 	private String desiredTable = "benutzer";
+	// Lokale Liste mit den Spaltennamen, werden basierend auf desiredTable geladen
+	private List<String> columnNames; //
 
-	// Konstruktor wenn keine Datenbank erstellt nur neue ArrayList<User>
 	public UserManager() {
-		users = new ArrayList<>(); // Initialisiert die User-Liste ohne Datenbankverbindung
-	}
-
-	// Konstruktor wenn Datenbank vorhanden - nimmt vorhandene Verbindung
-	// erstellt die ArrayList<User> basierend auf der DB
-	public UserManager(DatabaseConnection dbConnect) {
-		this.dbConnect = dbConnect; // Setzt die Datenbankverbindung
-		getAllUsers(); // Lädt Benutzer aus der Datenbank
+		users = new ArrayList<>();
 	}
 
 	// Konstruktor wenn Datenbank vorhanden - nimmt vorhandene Verbindung
 	// erstellt die lokale User-List basierend auf der DB
 	// schreibt zusätzlich logMessages für den LogManager
-	// sollte Standart sein für Nachverofolgung
+	// Standart für Nachverofolgung mit log
 	public UserManager(DatabaseConnection dbConnect, LogManager log) {
 		this.log = log; // Setzt LogManager
 		this.dbConnect = dbConnect;
+		try {
+			// versuche Spaltennamen dynamisch zu ermitteln und in lokale Liste zu speichern
+			// damit alle Abfragen mit den gleichen Spaltennamen funktionieren
+			columnNames = dbConnect.getColumnNames(dbConnect.findTableName(desiredTable));
+		} catch (SQLException e) {
+			log.sqlExceptionLog(e, managerType);
+			throw new RuntimeException(e);
+		}
 		getAllUsers();
 	}
 
@@ -53,18 +55,26 @@ public class UserManager {
 		users = new ArrayList<>();
 		log.log("Versuche '" + sql + "' auszuführen...", Log.LogType.INFO, managerType);
 
-		try (ResultSet rs = dbConnect.getConnection().prepareStatement(sql).executeQuery()) {
+		try (ResultSet rs = dbConnect.getResultSet(sql)) {
 			while (rs.next()) {
 				// Erstellen eines neuen User-Objekts basierend auf den DB-Daten
-				User user = new User(rs.getString("userid"), rs.getString("name"), rs.getString("vorname"),
-						rs.getString("email"), rs.getString("tel"), rs.getString("pass"), rs.getString("role"),
-						rs.getBoolean("isprojectlead"), rs.getDouble("hourlyRate"));
+				User user = new User();
+				user.setUserId(rs.getString("userid"));
+				user.setName(rs.getString("name"));
+				user.setVorname(rs.getString("vorname"));
+				user.setEmail(rs.getString("email"));
+				user.setTel(rs.getString("tel"));
+				user.setPass(rs.getString("pass"));
+				user.setRole(user.toRole(rs.getString("role")));
+				user.setProjectLead(rs.getBoolean("isprojectlead"));
+				user.setHourlyRate(rs.getDouble("hourlyRate"));
 				users.add(user); // Benutzer zur lokalen Liste hinzufügen
 			}
 			log.log(users.size() + " Nutzer gefunden.", Log.LogType.SUCCESS, managerType);
 			setUsers(users); // Liste lokal speichern
 		} catch (SQLException e) {
-			log.sqlExceptionLog(e, "SELECT * FROM benutzer;", managerType); // Fehler protokollieren
+			log.sqlExceptionLog(e, managerType); // Fehler protokollieren
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -88,79 +98,169 @@ public class UserManager {
 	// schreiben
 	// + Exception Handling hinzufügen, falls das Einfügen fehlschlägt
 	public void addUser(User user) {
-		users.add(user); // Benutzer zur lokalen Liste hinzufügen
+//		users.add(user); 
 		// wenn Benutzer nicht zur Liste hinzugefügt werden konnte ERROR-Log erstellen
-		// und return
-		if (!users.add(user)) {
+		// und SQL-Insert abbrechen
+		if (!users.add(user)) { // Benutzer zur lokalen Liste hinzufügen
 			log.errorLog("Benutzer konnte nicht zur lokalen Liste hinzugefügt werden. SQL-Query abgebrochen!",
 					managerType);
 			return;
 		}
-		sqlInsert(user, true);
-		log.successLog("SQL-Query erfolgreich ausgeführt.", managerType);
+		log.successLog("Benutzer zur lokalen Liste hinzugefügt.", managerType);
+		try {
+			sqlInsert(user, true);
+		} catch (SQLException e) {
+			log.sqlExceptionLog(e, managerType);
+		}
 	}
 
 	// SQL-Query vorbereiten und an die Datenbank senden
-	public void sqlInsert(User user, boolean isDynamic) {
-		// wenn Dynamischer Insert false ist, wird der vorgefertigte Befehl benutzt
+	private void sqlInsert(User user, boolean isDynamic) throws SQLException {
+		// wenn Dynamischer Insert false ist, wird der statische Befehl benutzt
 		// kann zu Problemen führen wenn die Spaltennamen in der DB verändert wurden
 		if (!isDynamic) {
+			log.log("Versuche statischen SQL-Insert", Log.LogType.INFO, managerType);
 			// SQL-Query "INSERT INTO" mit dem private String desiredTable = "benutzer"
 			String sql = "INSERT INTO " + desiredTable
 					+ " (userid, name, vorname, email, tel, pass, role, isProjectLead, hourlyRate) VALUES ("
 					+ "?, ?, ?, ?, ?, ?, ?, ?, ?);";
-			try (Connection conn = dbConnect.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+			try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(sql)) {
 				stmt.setString(1, user.getUserId());
 				stmt.setString(2, user.getName());
 				stmt.setString(3, user.getVorname());
 				stmt.setString(4, user.getEmail());
 				stmt.setString(5, user.getTel());
 				stmt.setString(6, user.getPass()); // später hashedPass
-				stmt.setString(7, user.getRole());
+				stmt.setString(7, user.toRoleString(user.getRole()));
 				stmt.setBoolean(8, user.isProjectLead());
 				stmt.setDouble(9, user.getHourlyRate());
 				stmt.executeQuery();
 			} catch (SQLException e) {
-				log.sqlExceptionLog(e, sql, managerType);
+				throw new SQLException(sql + " konnte nicht ausgeführt werden.", e);
 			}
-			return;
 		}
-		try (Connection conn = dbConnect.getConnection()) {
+		log.log("Versuche dynamischen SQL-Insert", Log.LogType.INFO, managerType);
+		// Dynamischen SQL-Query aufbauen
+		StringBuilder sqlBuilder = new StringBuilder("INSERT INTO ").append(desiredTable).append(" (");
+		StringBuilder valuesBuilder = new StringBuilder(" VALUES (");
 
-			// Tabellenname dynamisch finden
-			desiredTable = dbConnect.findTableName(desiredTable);
-			if (desiredTable == null) {
-				throw new RuntimeException("Tabelle " + desiredTable + " nicht gefunden.");
+		for (int i = 0; i < columnNames.size(); i++) {
+			sqlBuilder.append(columnNames.get(i));
+			valuesBuilder.append("?");
+
+			if (i < columnNames.size() - 1) {
+				sqlBuilder.append(", ");
+				valuesBuilder.append(", ");
 			}
+		}
+		sqlBuilder.append(")").append(valuesBuilder).append(");");
 
-			// Spaltennamen dynamisch ermitteln
-			List<String> columnNames = dbConnect.getColumnNames(desiredTable);
+		String sql = sqlBuilder.toString();
 
-			// Dynamischen SQL-Query aufbauen
-			StringBuilder sqlBuilder = new StringBuilder("INSERT INTO ").append(desiredTable).append(" (");
-			StringBuilder valuesBuilder = new StringBuilder(" VALUES (");
+		// PreparedStatement vorbereiten
+		try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(sql)) {
+			setUserParameters(stmt, columnNames, user);
+			stmt.executeUpdate();
+			log.successLog(sql, managerType);
+		} catch (SQLException e) {
+			throw new SQLException(sql + " konnte nicht ausgeführt werden.");
+		}
+	}
 
-			for (int i = 0; i < columnNames.size(); i++) {
-				sqlBuilder.append(columnNames.get(i));
-				valuesBuilder.append("?");
-
-				if (i < columnNames.size() - 1) {
-					sqlBuilder.append(", ");
-					valuesBuilder.append(", ");
+	// TODO updateUser(User user)
+	// + Methode um Benutzerdaten in der Datenbank zu aktualisieren
+	// - SQL-UPDATE-Befehl vorbereiten, um die geänderten Benutzerdaten in der
+	// Datenbank zu speichern
+	// + Lokale Benutzerdaten in der ArrayList aktualisieren
+	// + Exception Handling hinzufügen, falls das Update fehlschlägt
+	public void updateUser(User currentUser) {
+		for (User user : users) {
+			if (user.getUserId().equals(currentUser.getUserId())) {
+				log.successLog(currentUser.toString() + "in Liste gefunden.", managerType);
+				// Lokale Liste aktualisieren
+				user.setUserId(currentUser.getUserId());
+				user.setName(currentUser.getName());
+				user.setVorname(currentUser.getVorname());
+				user.setEmail(currentUser.getEmail());
+				user.setTel(currentUser.getTel());
+				user.setPass(currentUser.getPass());
+				user.setRole(currentUser.getRole());
+				user.setProjectLead(currentUser.isProjectLead());
+				user.setHourlyRate(currentUser.getHourlyRate());
+				log.log("User List updated: " + user.toString(), Log.LogType.INFO, managerType);
+				try {
+					log.log("try sqlUpdate:", Log.LogType.INFO, managerType);
+					sqlUpdate(currentUser, true);
+				} catch (SQLException e) {
+					log.sqlExceptionLog(e, managerType);
 				}
 			}
-			sqlBuilder.append(")").append(valuesBuilder).append(");");
-
-			String sql = sqlBuilder.toString();
-
-			// PreparedStatement vorbereiten
-			try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-				setUserParameters(stmt, columnNames, user);
-				stmt.executeUpdate();
-			}
-		} catch (SQLException e) {
-			log.sqlExceptionLog(e, "Tabelle " + desiredTable + " nicht gefunden.", managerType);
 		}
+
+	}
+
+	// Benutzerdaten in der Datenbank zu aktualisieren
+	public void sqlUpdate(User user, boolean isDynamic) throws SQLException {
+		// wenn Dynamischer Insert false ist, wird der vorgefertigte Befehl benutzt
+		// kann zu Problemen führen wenn die Spaltennamen in der DB verändert wurden
+		if (!isDynamic) {
+			log.log("Versuche statische SQL-Query auszuführen.", Log.LogType.INFO, managerType);
+			String sql = "UPDATE " + desiredTable
+					+ " SET name = ?, vorname = ?, email = ?, tel = ?, pass = ?, role = ?, isProjectLead = ?, hourlyRate = ? WHERE userid = ?;";
+			try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(sql)) {
+				stmt.setString(1, user.getName());
+				stmt.setString(2, user.getVorname());
+				stmt.setString(3, user.getEmail());
+				stmt.setString(4, user.getTel());
+				stmt.setString(5, user.getPass()); // später hashedPass
+				stmt.setString(6, user.toRoleString(user.getRole()));
+				stmt.setBoolean(7, user.isProjectLead());
+				stmt.setDouble(8, user.getHourlyRate());
+				stmt.setString(9, user.getUserId());
+				stmt.executeUpdate();
+				log.successLog(sql, managerType);
+			} catch (SQLException e) {
+				throw new SQLException(sql + " konnte nicht ausgeführt werden.", e);
+			}
+		}
+		log.log("Versuche dynamische SQL-Query auszuführen.", Log.LogType.INFO, managerType);
+		// Dynamischen SQL-Query aufbauen
+		StringBuilder sqlBuilder = new StringBuilder("UPDATE ").append(desiredTable).append(" SET ");
+		for (int i = 0; i < columnNames.size(); i++) {
+			String column = columnNames.get(i).toLowerCase().strip().replaceAll("[\\s-]+", "");
+
+			// Überspringe die "userid"-Spalte (oder die Primärschlüsselspalte, die nicht
+			// aktualisiert werden soll)
+			if (column.equals("userid")) {
+				continue; // Überspringen
+			}
+			sqlBuilder.append(columnNames.get(i)).append(" = ?");
+			if (i < columnNames.size() - 1) {
+				sqlBuilder.append(", ");
+			}
+		}
+
+		// Entfernt das letzte Komma, falls es existiert
+		if (sqlBuilder.charAt(sqlBuilder.length() - 2) == ',') {
+			sqlBuilder.setLength(sqlBuilder.length() - 2); // entfernt das letzte ", "
+		}
+
+		// WHERE-Bedingung hinzufügen (angenommen columnNames.get(0) ist der
+		// Primärschlüssel, z.B. 'userid')
+		sqlBuilder.append(" WHERE ").append(columnNames.get(0)).append(" = ?;");
+
+		String sql = sqlBuilder.toString();
+
+		log.log(sql, Log.LogType.SUCCESS, managerType);
+		// PreparedStatement vorbereiten
+		try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(sql)) {
+			setUserParameters(stmt, columnNames, user);
+			stmt.executeUpdate();
+			log.successLog(sql, managerType);
+		} catch (SQLException e) {
+			throw new SQLException(sql + " konnte nicht ausgeführt werden.", e);
+		}
+
 	}
 
 	// TODO removeUser(User user)
@@ -170,100 +270,82 @@ public class UserManager {
 	// - Benutzer aus der lokalen ArrayList entfernen
 	// - Exception Handling hinzufügen, falls das Löschen fehlschlägt
 	public void removeUser(User currentUser) {
-		users.remove(currentUser); // Benutzer aus der lokalen Liste entfernen
+		if (!users.remove(currentUser)) {
+			log.errorLog("Benutzer konnte nicht entfernt werden. SQL-Query abgebrochen!", managerType);
+			return;
+		}
+		log.successLog("Benutzer aus lokaler Liste gelöscht.", managerType);
+		try {
+			sqlDelete(currentUser, true);
+		} catch (SQLException e) {
+			log.sqlExceptionLog(e, managerType);
+		}
+	}
+
+	// Methode um User aus Datenbank zu löschen
+	private void sqlDelete(User currentUser, boolean isDynamic) throws SQLException {
 		// TODO: SQL-DELETE-Anweisung hier implementieren, um den Benutzer aus der
-		// Datenbank zu löschen
+		String sql = "DELETE FROM " + desiredTable + " WHERE userid = ?";
 
-	}
-
-	// TODO updateUser(User user)
-	// - Methode um Benutzerdaten in der Datenbank zu aktualisieren
-	// - SQL-UPDATE-Befehl vorbereiten, um die geänderten Benutzerdaten in der
-	// Datenbank zu speichern
-	// - Lokale Benutzerdaten in der ArrayList aktualisieren
-	// - Exception Handling hinzufügen, falls das Update fehlschlägt
-	public void updateUser(User currentUser) {
-		for (User user : users) {
-			if (user.getUserId().equals(currentUser.getUserId())) {
-				// Lokale Liste aktualisieren
-				user.setName(currentUser.getName());
-				user.setVorname(currentUser.getVorname());
-				user.setEmail(currentUser.getEmail());
-				user.setTel(currentUser.getTel());
-				user.setPass(currentUser.getPass());
-				user.setRole(currentUser.getRole());
-				user.setProjectLead(currentUser.isProjectLead());
-				user.setHourlyRate(currentUser.getHourlyRate());
-				return;
-			}
+		try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(sql)) {
+			stmt.setString(1, currentUser.getUserId());
+			stmt.executeUpdate();
+			log.successLog(sql, managerType);
 		}
-		// TODO: SQL-UPDATE-Anweisung hier implementieren, um Benutzerdaten in der
-		// Datenbank zu aktualisieren
-	}
+		throw new SQLException(sql + " konnte nicht ausgeführt werden.");
 
-	// Methode zum Abrufen aller Projektleiter über eine Liste von Projekten
-	public ArrayList<User> getAllTimeProjectLeads(ArrayList<Project> projects) {
-		ArrayList<User> projectLeads = new ArrayList<>();
-		for (Project project : projects) {
-			for (User user : users) {
-				if (user.getUserId().equals(project.getProjectLead())) {
-					projectLeads.add(user); // Benutzer als Projektleiter hinzufügen
-				}
-			}
-		}
-		return projectLeads;
-	}
-
-	// Methode um alle aktuellen Projektleiter abzurufen (nur für laufende Projekte)
-	public ArrayList<User> getActualProjectLeads(ArrayList<Project> projects) {
-		ArrayList<User> projectLeads = getAllTimeProjectLeads(projects);
-		for (User projectLead : getAllTimeProjectLeads(projects)) {
-			for (Project project : projects) {
-				if (project.isCompleted()) {
-					projectLeads.remove(projectLead); // Entfernt Benutzer, wenn das Projekt abgeschlossen ist
-				}
-			}
-		}
-		return projectLeads;
 	}
 
 	// Setter für Projektleiter
-	public void setProjectLeads(ArrayList<User> projectLeads) {
+	public void setProjectLeads(ArrayList<Project> projects) {
+		ArrayList<User> currentLeads = getCurrentProjectLeads(projects);
 		for (User user : users) {
-			for (User leader : projectLeads) {
+			boolean wasLead = user.isProjectLead(); // Prüfe, ob der Benutzer vorher ein Projektleiter war
+			boolean isLead = false; // Standardmäßig ist er kein Projektleiter
+			// Überprüfe, ob der Benutzer in der Liste der aktuellen Projektleiter ist
+			for (User leader : currentLeads) {
 				if (user.getUserId().equals(leader.getUserId())) {
-					user.setProjectLead(true); // Setzt Benutzer als Projektleiter
+					isLead = true;
+					break; // Schleife abbrechen, wenn wir den Benutzer gefunden haben
 				}
+			}
+			user.setProjectLead(isLead); // Setze den neuen Status
+			// Update nur, wenn sich der Status geändert hat
+			if (wasLead != isLead) {
+				updateUser(user);
 			}
 		}
 	}
 
-	// TODO searchUsers(String attribute, String value)
-	// - Methode um Benutzer anhand eines Attributs in der Datenbank zu suchen (z.B.
-	// Name oder E-Mail)
-	// - SQL-SELECT-Befehl mit WHERE-Klausel vorbereiten, um nach dem Attribut zu
-	// suchen
-	// - Benutzer entsprechend der Suchkriterien aus der Datenbank laden und in die
-	// ArrayList einfügen
-	// - Exception Handling für mögliche Datenbankfehler
+	// Methode um alle aktuellen Projektleiter abzurufen (nur für laufende Projekte)
+	public ArrayList<User> getCurrentProjectLeads(ArrayList<Project> projects) {
+		ArrayList<User> currentLeads = new ArrayList<>(getAllTimeProjectLeads(projects));
+		for (User projectLead : currentLeads) {
+			for (Project project : projects) {
+				if (project.isCompleted()) {
+					currentLeads.remove(projectLead); // Entfernt Benutzer, wenn das Projekt abgeschlossen ist
+				}
+			}
+		}
+		return currentLeads;
+	}
 
-	// TODO validateUserData(User user)
-	// - Methode zur Validierung der Benutzerdaten vor dem Einfügen oder
-	// Aktualisieren in der Datenbank
-	// - Überprüfen, ob alle Pflichtfelder ausgefüllt sind (z.B. Name und E-Mail)
-	// - Überprüfen, ob die E-Mail-Adresse ein gültiges Format hat
-	// - Falls Validierung fehlschlägt, eine Exception werfen oder eine
-	// Fehlermeldung zurückgeben
-
-	// TODO handleDatabaseExceptions()
-	// - Methode für Exception Handling bei Datenbankoperationen
-	// - SQLExceptions und andere mögliche Fehler abfangen
-	// - Benutzer oder Entwickler über Fehler informieren (Logging oder
-	// GUI-Benachrichtigung)
+	// Methode zum Abrufen der All-Time Projektleiter über eine Liste von Projekten
+	public ArrayList<User> getAllTimeProjectLeads(ArrayList<Project> projects) {
+		ArrayList<User> allTeamLeads = new ArrayList<>();
+		for (Project project : projects) {
+			for (User user : users) {
+				if (user.equals(project.getProjectLead())) {
+					allTeamLeads.add(user); // Benutzer als Projektleiter hinzufügen
+				}
+			}
+		}
+		return allTeamLeads;
+	}
 
 	// TODO getWorktimeByUser(User currentUser)
 	// Methode, die alle Arbeitszeiten zurückgibt, die von einem Nutzer existieren
-	// Dazu gehört:
+	// Dazu gehört: Berechnung der Gesamtarbeitszeit eines Benutzers
 
 	// TODO getTasksByUser(User currentUser)
 	// Methode, die alle Aufgaben zurückgibt, an denen ein Benutzer arbeitet oder
@@ -280,6 +362,16 @@ public class UserManager {
 	// dazugehörigen Aufgaben aus dem TaskManager suchen
 	// Aus den Aufgaben die Projekte ableiten und zurückgeben
 
+	// TODO searchUser(String attribute, String value)
+	// - Methode um Benutzer anhand eines Attributs in der Liste zu suchen (z.B.
+	// Name oder E-Mail)
+
+	// TODO handleDatabaseExceptions()
+	// - Methode für Exception Handling bei Datenbankoperationen
+	// - SQLExceptions und andere mögliche Fehler abfangen
+	// - Benutzer oder Entwickler über Fehler informieren (Logging oder
+	// GUI-Benachrichtigung)
+
 	// Dynamisches Setzen der PreparedStatement-Parameter für die SQL-Query (INSERT
 	// INTO, UPDATE)
 	private void setUserParameters(PreparedStatement stmt, List<String> columnNames, User user) throws SQLException {
@@ -292,7 +384,7 @@ public class UserManager {
 			// - steht für den Bindestrich.
 			// + bedeutet, dass alle aufeinanderfolgenden Vorkommen entfernt werden.
 			// wird ersetzt durch "" -> nichts
-			String column = columnNames.get(i).toLowerCase().strip().replaceAll("\\s-]+", "");
+			String column = columnNames.get(i).toLowerCase().strip().replaceAll("[\\s-]+", "");
 
 			// Je nach Spaltenname wird der Wert des entsprechenden Feldes geholt und
 			// an PreparedStaement übergeben
@@ -334,7 +426,7 @@ public class UserManager {
 			case "role":
 			case "rolle":
 			case "position":
-				stmt.setString(i + 1, user.getRole());
+				stmt.setString(i + 1, user.toRoleString(user.getRole()));
 				break;
 			case "isprojectlead":
 			case "isprojectleader":

@@ -1,13 +1,10 @@
 package v2;
 
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-
+import java.awt.event.*;
+import java.util.*;
 import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
+import javax.swing.table.*;
 
 @SuppressWarnings("serial")
 public class GUIFullScreen extends JFrame {
@@ -31,17 +28,18 @@ public class GUIFullScreen extends JFrame {
 
 	public GUIFullScreen(DatabaseConnection dbConnect, LogManager log) {
 		setTitle("Projekt- & Aufgabenmanagement Tool"); // Fenstertitel
-		setMinimumSize(new Dimension(1000, 627)); // Minimale größe des Fensters, danach nicht mehr verkleinerbar
+		setMinimumSize(new Dimension(1000, 650)); // Minimale größe des Fensters, danach nicht mehr verkleinerbar
 		setLayout(new BorderLayout());
 		setLocationRelativeTo(null); // Fenster in der Mitte des Bildschirms
 		setExtendedState(JFrame.MAXIMIZED_BOTH); // Fenster maximiert öffnen
 //		setDefaultCloseOperation(EXIT_ON_CLOSE); // Standart schließen bei x
 		this.log = log;
-		
+
 		// WindowListener, sobald Fenster geschlossen wird wird saveLogs ausgeführt
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
+				dbConnect.closeConnection();
 				log.saveLogs();
 				System.exit(0);
 			}
@@ -53,9 +51,14 @@ public class GUIFullScreen extends JFrame {
 		// brauchen
 		// Manager brauchen DB-Connection
 		if (dbConnect.getConnection() != null) {
+			// neue Managerklassen mit der gleichen Connection um eine Verbindung zu
+			// benutzen
+			// und LogManager um einen globalen Log zu schreiben
 			uMan = new UserManager(dbConnect, log);
-			pMan = new ProjectManager(dbConnect, log);
+			pMan = new ProjectManager(dbConnect, log, uMan);
 			tMan = new TaskManager(dbConnect, log);
+			// WorkManager mit den anderen ManagerKlassen initialisieren,
+			// Muss auf die gleichen Daten zugreifen können
 			wMan = new WorkManager(dbConnect, log, uMan, pMan, tMan);
 
 			log.log("Programm wird gestartet...", Log.LogType.INFO, Log.Manager.GUI);
@@ -112,7 +115,7 @@ public class GUIFullScreen extends JFrame {
 
 			add(tabPane, BorderLayout.CENTER);
 
-			log.log("Willkommen! '-HIER KOMMT NOCH DER RICHTIGE NUTZER-'\n", Log.LogType.INFO, Log.Manager.GUI);
+			log.log("Willkommen! '-HIER KOMMT NOCH DER RICHTIGE NUTZER-'", Log.LogType.INFO, Log.Manager.GUI);
 
 			// Wenn soweit dass ich User übergebe
 //		logManager.log("Anmeldung von: " + currentUser.getName() + ", " currentUser.getVorname + "\n", Log.LogType.INFO);
@@ -130,8 +133,14 @@ public class GUIFullScreen extends JFrame {
 	private JPanel getMainPanel(String panelName) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
-		JSplitPane splitPane = getSplitPane(panelName);
-		panel.add(splitPane, BorderLayout.CENTER);
+
+		// mit SplitPane
+//		JSplitPane splitPane = getSplitPane(panelName);
+//		panel.add(splitPane, BorderLayout.CENTER);
+
+		// mit BorderLayout
+		panel.add(getTablePanel(panelName), BorderLayout.CENTER);
+		panel.add(getRightPanel(panelName), BorderLayout.EAST);
 		return panel;
 	}
 
@@ -144,15 +153,17 @@ public class GUIFullScreen extends JFrame {
 //		return panel;
 //	}
 
-	// SplitPane für die MainPanel erstellen
-	private JSplitPane getSplitPane(String panelName) {
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, getTablePanel(panelName),
-				getRightPanel(panelName));
-		splitPane.setResizeWeight(1);
-		splitPane.setDividerSize(3);
-		splitPane.setEnabled(false);
-		return splitPane;
-	}
+	// UNUSED: machs jetzt übers BorderLayout, damit die rechte Seite immer gleich
+	// groß bleibt
+//	// SplitPane für die MainPanel erstellen
+//	private JSplitPane getSplitPane(String panelName) {
+//		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, getTablePanel(panelName),
+//				getRightPanel(panelName));
+//		splitPane.setResizeWeight(1);
+//		splitPane.setDividerSize(3);
+//		splitPane.setEnabled(false);
+//		return splitPane;
+//	}
 
 	// Je nach Panel wird anderes TableModel geladen und gibt Panel zurück
 	private JScrollPane getTablePanel(String panelName) {
@@ -163,9 +174,12 @@ public class GUIFullScreen extends JFrame {
 			// Neues TableModel mit Usern erstellen
 			UserTableModel userTableModel = new UserTableModel(users); // holt die UserData
 			userTable = new JTable(userTableModel); // Neue Tabelle mit dem TableModel
+			// TableRowSorter erstellen
+			TableRowSorter<UserTableModel> userSorter = new TableRowSorter<>(userTableModel);
+			userTable.setRowSorter(userSorter);
+
 			// 7 Spalten : "User-ID", "Name", "Vorname", "E-Mail", "Passwort", "Rolle",
 			// "Projektleiter"
-
 			// Voreingestellte Spaltenbreiten übergeben
 //			int[] userColumnWidhts = { 20, 150, 500, 50, 30, 70, 10 }; // breiten der einzelnen Spalten einstellen
 //			setColumnWidths(userTable, userColumnWidhts); // voreingestellte Breiten übergeben und Spaltenbreiten ändern
@@ -176,14 +190,14 @@ public class GUIFullScreen extends JFrame {
 			scrollPane = new JScrollPane(userTable); // ScrollPane, wenn die Tabellen länger werden
 			return scrollPane;
 		case "projectPanel":
-			ProjectTableModel projectModel = new ProjectTableModel(projects);
-			projectTable = new JTable(projectModel);
+			ProjectTableModel projectTableModel = new ProjectTableModel(projects);
+			projectTable = new JTable(projectTableModel);
 			setDynamicColumnWidths(projectTable);
 			scrollPane = new JScrollPane(projectTable);
 			return scrollPane;
 		case "taskPanel":
-			TaskTableModel taskModel = new TaskTableModel(tasks);
-			taskTable = new JTable(taskModel);
+			TaskTableModel taskTableModel = new TaskTableModel(tasks);
+			taskTable = new JTable(taskTableModel);
 			setDynamicColumnWidths(taskTable);
 			scrollPane = new JScrollPane(taskTable);
 			return scrollPane;
@@ -206,13 +220,13 @@ public class GUIFullScreen extends JFrame {
 		case "userPanel":
 			// neue Klasse für das Panel erstellen
 			// Panel aus der PanelUserActions laden
-			newPanel = new PanelUserAction(users, userTable, uMan, log); // setz Panel auf das aus der Klasse
+			newPanel = new PanelUserAction(users, userTable, uMan, log, wMan); // setz Panel auf das aus der Klasse
 
 //			newPanel = getUserActionsPanel(); // setzt das zu übergebene Panel auf userPanel
 			break;
 		case "projectPanel":
 //			newPanel = new PanelProjectAction(projects, projectTable, pMan, log);
-			newPanel = new PanelUserAction(users, userTable, uMan, log);
+			newPanel = new PanelUserAction(users, userTable, uMan, log, wMan);
 			break;
 		case "taskPanel":
 			newPanel = new PanelTaskAction(tasks, taskTable, tMan, log);

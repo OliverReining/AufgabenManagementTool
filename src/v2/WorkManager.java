@@ -17,10 +17,11 @@ public class WorkManager {
 	private UserManager uMan; // Verwalter für Benutzer
 	private ProjectManager pMan; // Verwalter für Projekte
 	private TaskManager tMan; // Verwalter für Aufgaben
+	private Log.Manager managerType = Log.Manager.WORKTIME_MANAGER;
 
 	// Konstruktoren
 	public WorkManager() {
-		dbConnect = new DatabaseConnection(); // Initialisiere Datenbankverbindung
+		dbConnect = new DatabaseConnection(log); // Initialisiere Datenbankverbindung
 		uMan = new UserManager(); // Initialisiere UserManager
 		pMan = new ProjectManager(); // Initialisiere ProjectManager
 		tMan = new TaskManager(); // Initialisiere TaskManager
@@ -29,19 +30,19 @@ public class WorkManager {
 
 	public WorkManager(DatabaseConnection dbConnect) {
 		this.dbConnect = dbConnect; // Setze Datenbankverbindung
-		tMan = new TaskManager(dbConnect); // Initialisiere TaskManager mit Datenbankverbindung
-		uMan = new UserManager(dbConnect); // Initialisiere UserManager mit Datenbankverbindung
-		pMan = new ProjectManager(dbConnect); // Initialisiere ProjectManager mit Datenbankverbindung
+		uMan = new UserManager(dbConnect, log); // Initialisiere UserManager mit Datenbankverbindung
+		pMan = new ProjectManager(dbConnect, log, uMan); // Initialisiere ProjectManager mit Datenbankverbindung
+		tMan = new TaskManager(dbConnect, log); // Initialisiere TaskManager mit Datenbankverbindung
 		getTaskUserFromDB(); // Lade Worktime-Daten
 	}
 
-	public WorkManager(DatabaseConnection dbConnect, LogManager log, UserManager userManager,
-			ProjectManager projectManager, TaskManager taskManager) {
+	public WorkManager(DatabaseConnection dbConnect, LogManager log, UserManager uMan, ProjectManager pMan,
+			TaskManager tMan) {
 		this.dbConnect = dbConnect; // Setze Datenbankverbindung
 		this.log = log; // Setze LogManager
-		this.uMan = userManager; // Setze UserManager
-		this.pMan = projectManager; // Setze ProjectManager
-		this.tMan = taskManager; // Setze TaskManager
+		this.uMan = uMan; // Setze UserManager
+		this.pMan = pMan; // Setze ProjectManager
+		this.tMan = tMan; // Setze TaskManager
 		getTaskUserFromDB(); // Lade Worktime-Daten
 	}
 
@@ -50,7 +51,7 @@ public class WorkManager {
 		times = new ArrayList<>();
 		String sql = "SELECT * FROM task_user;";
 
-		log.log("Versuche '" + sql + "' auszuführen...", Log.LogType.INFO, Log.Manager.WORKTIME_MANAGER);
+		log.log("Versuche '" + sql + "' auszuführen...", Log.LogType.INFO, managerType);
 
 		try (ResultSet rs = dbConnect.getConnection().prepareStatement(sql).executeQuery()) {
 			while (rs.next()) {
@@ -67,18 +68,91 @@ public class WorkManager {
 				Worktime worktime = new Worktime(id, task, user, startTime, endTime, problems, comment, overtime);
 				times.add(worktime); // Worktime zur Liste hinzufügen
 			}
-			log.log(times.size()+" Arbeitszeiten gefunden", Log.LogType.SUCCESS, Log.Manager.WORKTIME_MANAGER);
+			log.log(times.size() + " Arbeitszeiten gefunden", Log.LogType.SUCCESS, managerType);
 			setTimes(times); // Liste lokal speichern
 		} catch (SQLException e) {
-			log.sqlExceptionLog(e, sql, Log.Manager.WORKTIME_MANAGER); // Fehler protokollieren
+			log.sqlExceptionLog(e, Log.Manager.WORKTIME_MANAGER); // Fehler protokollieren
+			throw new RuntimeException(e);
 		}
 	}
+
+	// Methode um alle aktuellen Projektleiter abzurufen (nur für laufende Projekte)
+	// Holt alle laufenden Projekte aus ProjectManager
+	// Setzt den Projektleiterstatus für jeden User auf false
+	// Wenn User in der Liste der Projektleiter ist, wieder auf true
+	public ArrayList<User> getCurrentProjectLeads() {
+		log.log("Start: getCurrentProjectLeads", Log.LogType.OPEN, managerType);
+		log.log("ArrayList<Project> projects = pMan.getCurrentProjects();", Log.LogType.INFO, managerType);
+		ArrayList<Project> projects = pMan.getCurrentProjects();
+		log.log("ArrayList<User> users = uMan.getUsers();", Log.LogType.INFO, managerType);
+		ArrayList<User> users = uMan.getUsers();
+		log.log("ArrayList<User> currentProjectLeads = new ArrayList<>();", Log.LogType.INFO, managerType);
+		ArrayList<User> currentProjectLeads = new ArrayList<>();
+		// Setze den Projektleiterstatus für alle Benutzer auf false
+		log.log("for (User user : users) {", Log.LogType.INFO, managerType);
+		for (User user : users) {
+			log.log("user.setProjectLead(false);", Log.LogType.INFO, managerType);
+			user.setProjectLead(false);
+			log.log("uMan.updateUser(user);", Log.LogType.INFO, managerType);
+			uMan.updateUser(user);
+		}
+		// Prüfe, ob Benutzer Projektleiter eines aktuellen Projekts ist
+		for (Project project : projects) {
+			for (User user : users) {
+				if (user.equals(project.getProjectLead())) {
+					user.setProjectLead(true);
+					uMan.updateUser(user);
+					if (!currentProjectLeads.contains(user)) {
+						currentProjectLeads.add(user); // Verhindere Duplikate
+					}
+				}
+			}
+		}
+		log.successLog("Return currentLeads.", managerType);
+		return currentProjectLeads;
+	}
+
+	// Methode zum Abrufen der All-Time Projektleiter über eine Liste von Projekten
+	public ArrayList<User> getAllTimeProjectLeads() {
+		log.log("Start: getAllTimeProjectLeads", Log.LogType.OPEN, managerType);
+		ArrayList<Project> projects = pMan.getProjects();
+		ArrayList<User> users = uMan.getUsers();
+		ArrayList<User> allProjectLeads = new ArrayList<>();
+		for (Project project : projects) {
+			for (User user : users) {
+				if (user.equals(project.getProjectLead())) {
+					allProjectLeads.add(user); // Benutzer als Projektleiter hinzufügen
+				}
+			}
+		}
+		log.successLog("Return allProjectLeads.", managerType);
+		return allProjectLeads;
+	}
+
+	// TODO getWorktimeByUser(User currentUser)
+	// Methode, die alle Arbeitszeiten zurückgibt, die von einem Nutzer existieren
+	// Dazu gehört: Berechnung der Gesamtarbeitszeit eines Benutzers
+
+	// TODO getTasksByUser(User currentUser)
+	// Methode, die alle Aufgaben zurückgibt, an denen ein Benutzer arbeitet oder
+	// gearbeitet hat
+	// Dazu gehört:
+	// Arbeitszeiten des Benutzers aus dem WorktimeManager abrufen
+	// dazugehörigen Aufgaben aus dem TaskManager suchen
+
+	// TODO getProjectsByUser(User currentUser)
+	// Methode, die alle Projekte zurückgibt, an denen ein Benutzer arbeitet oder
+	// gearbeitet hat
+	// Dazu gehört:
+	// Arbeitszeiten des Benutzers aus dem WorktimeManager abrufen
+	// dazugehörigen Aufgaben aus dem TaskManager suchen
+	// Aus den Aufgaben die Projekte ableiten und zurückgeben
 
 	// Methode um die Gesamtarbeitszeit eines Benutzers an einem bestimmten Projekt
 	// zu berechnen
 	public void getTotalWorktimeForUserOnProject(User user, Project project) {
-		// TODO: Implementierung der Berechnung der Gesamtarbeitszeit eines Benutzers an
-		// einem Projekt
+		// TODO: Implementierung der Berechnung der Gesamtarbeitszeit eines
+		// Benutzers an einem Projekt
 	}
 
 	// Methode um alle Benutzer zurückzugeben, die an einem bestimmten Projekt

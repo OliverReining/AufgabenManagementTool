@@ -6,7 +6,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class UserTableModel extends AbstractTableModel {
 
-	private final String[] columnNames = { "User-ID", "Name", "Vorname", "E-Mail","Tel.Nr", "Passwort", "Rolle", "Projektleiter" };
+	private final String[] columnNames = { "User-ID", "Name", "Vorname", "E-Mail","Tel.Nr", "Passwort", "Rolle", "Projektleiter", "Stundenlohn" };
 	private final ArrayList<User> users;
 
 	public UserTableModel(ArrayList<User> users) {
@@ -33,19 +33,19 @@ public class UserTableModel extends AbstractTableModel {
 		User user = users.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
-			return user.getUserId();
+			return user.getUserId().strip();
 		case 1:
-			return user.getName();
+			return user.getName().strip();
 		case 2:
-			return user.getVorname();
+			return user.getVorname().strip();
 		case 3:
-			return user.getEmail();
+			return user.getEmail().strip();
 		case 4:
-			return user.getTel();
+			return user.getTel().strip();
 		case 5:
-			return user.getPass();
+			return user.getPass().strip();
 		case 6:
-			return user.getRole();
+			return user.toRoleString(user.getRole());
 		case 7:
 			return user.isProjectLead() ? "Yes" : "No";
 		case 8:

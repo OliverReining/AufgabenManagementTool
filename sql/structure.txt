@@ -5,7 +5,7 @@ CREATE DATABASE ams;
 USE ams;
 
 CREATE TABLE benutzer (
-  userid varchar(6) NOT NULL PRIMARY KEY,
+  userid varchar(8) NOT NULL PRIMARY KEY,
   name varchar(255) NOT NULL,
   vorname varchar(255) NOT NULL,
   email varchar(255) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE project (
   projectid int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   title varchar(255) NOT NULL,
   description text DEFAULT NULL,
-  projectlead varchar(6) NOT NULL,
+  projectlead varchar(8) NOT NULL,
   isCompleted boolean DEFAULT FALSE,
   startDate DATE,
   dueDate DATE,
@@ -45,7 +45,7 @@ CREATE TABLE task (
 CREATE TABLE task_user (
   id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   taskid int(11) NOT NULL,
-  userid varchar(6) NOT NULL,
+  userid varchar(8) NOT NULL,
   starttime timestamp NULL DEFAULT NULL,
   endtime timestamp NULL DEFAULT NULL,
   problems int(1) DEFAULT NULL,

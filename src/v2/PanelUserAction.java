@@ -1,20 +1,15 @@
 package v2;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.util.ArrayList;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import java.awt.*;
+import java.util.*;
+import javax.swing.*;
 
 public class PanelUserAction extends JPanel {
 
+	private UserManager uMan;
+	private WorkManager wMan;
+	private ArrayList<User> users;
+	private JTable userTable;
 	private JTextField userIdField;
 	private JTextField nameField;
 	private JTextField vornameField;
@@ -25,9 +20,15 @@ public class PanelUserAction extends JPanel {
 	private boolean projectLead = false;
 	private JTextField hourlyRateField;
 
-	public PanelUserAction(ArrayList<User> users, JTable userTable, UserManager uMan, LogManager log) {
+	public PanelUserAction(ArrayList<User> users, JTable userTable, UserManager uMan, LogManager log,
+			WorkManager wMan) {
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
+		Log.Manager manager = Log.Manager.USER_MANAGER;
+		this.uMan = uMan;
+		this.wMan = wMan;
+		this.users = users;
+		this.userTable = userTable;
 
 		// Allgemeine Einstellungen für die Buttons
 		gbc.fill = GridBagConstraints.BOTH;
@@ -42,8 +43,7 @@ public class PanelUserAction extends JPanel {
 		// Refresh TableModel Button
 		JButton refresh = new JButton("aktualisieren");
 		refresh.addActionListener(e -> {
-			UserTableModel userModel = new UserTableModel(uMan.getUsers());
-			userTable.setModel(userModel);
+			refreshAll();
 		});
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -90,12 +90,7 @@ public class PanelUserAction extends JPanel {
 		// Benutzer erstellen Button
 		JButton button = new JButton("button");
 		button.addActionListener(e -> {
-			User newUser = new User();
-			// TODO: Felder auslesen -> new User("Werte aus den Feldern")
-
-			uMan.addUser(newUser);
-			UserTableModel userModel = new UserTableModel(uMan.getUsers());
-			userTable.setModel(userModel);
+			// TODO Button für was auch immer
 		});
 		gbc.gridx = 2;
 		gbc.gridy = 0;
@@ -120,7 +115,7 @@ public class PanelUserAction extends JPanel {
 			if (selectedRow != -1) {
 				log.log("new EditUserFrame(uMan.getUserById((String) userTable.getValueAt(selectedRow, 0)), uMan, log).setVisible(true)",
 						Log.LogType.OPEN, Log.Manager.GUI);
-				new FrameEditUser(uMan.getUserById((String) userTable.getValueAt(selectedRow, 0)), uMan, log)
+				new FrameUserEdit(uMan.getUserById((String) userTable.getValueAt(selectedRow, 0)), uMan, log)
 						.setVisible(true);
 			} else {
 				log.log("Es wurde kein User zum bearbeiten ausgewählt", Log.LogType.ERROR, Log.Manager.GUI);
@@ -193,67 +188,13 @@ public class PanelUserAction extends JPanel {
 		gbc.gridwidth = 2;
 		add(vornameField, gbc);
 
-		// -----------------------------------------------
-		// --- Komponenten für Zeile: y = 4 --- E-MAIL ---
-		// -----------------------------------------------
-
-		JLabel emailLabel = new JLabel("E-Mail");
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		gbc.gridwidth = 1;
-		add(emailLabel, gbc);
-
-		// E-Mail Textfeld -> generateEmailButton erzeugt email
-		emailField = new JTextField();
-		emailField.setEditable(false);
-		gbc.gridx = 1;
-		gbc.gridy = 4;
-		gbc.gridwidth = 1;
-		gbc.weightx = 0.7;
-		add(emailField, gbc);
-
-		// Create E-Mail Button
-		JButton emailButton = new JButton("E-Mail generieren");
-		emailButton.addActionListener(e -> {
-			if (nameField.getText().isEmpty() || vornameField.getText().isEmpty()) {
-				JOptionPane.showMessageDialog(null, "Name und Vorname düfen nicht leer sein.", "Fehler",
-						JOptionPane.ERROR_MESSAGE);
-			} else {
-				emailField.setText(generateEmail());
-			}
-		});
-		gbc.gridx = 2;
-		gbc.gridy = 4;
-		gbc.gridwidth = 1;
-		gbc.weightx = 0.3;
-		add(emailButton, gbc);
-
-		// ------------------------------------------------------
-		// --- Komponenten für Zeile: y = 5 --- TELEFONNUMMER ---
-		// ------------------------------------------------------
-
-		JLabel telLabel = new JLabel("Telefonnummer");
-		gbc.gridx = 0;
-		gbc.gridy = 5;
-		gbc.gridwidth = 1;
-		add(telLabel, gbc);
-
-		// UserID Field -> generateUserIDButton erzeugt userID
-		telField = new JTextField();
-		telField.setEditable(true); // verhindert selbstständiges schreiben in der textbox
-		gbc.gridx = 1;
-		gbc.gridy = 5;
-		gbc.gridwidth = 1;
-		gbc.weightx = 0.7;
-		add(telField, gbc);
-
 		// ------------------------------------------------
-		// --- Komponenten für Zeile: y = 6 --- USER-ID ---
+		// --- Komponenten für Zeile: y = 4 --- USER-ID ---
 		// ------------------------------------------------
 
 		JLabel userIdLabel = new JLabel("User-ID");
 		gbc.gridx = 0;
-		gbc.gridy = 6;
+		gbc.gridy = 4;
 		gbc.gridwidth = 1;
 		add(userIdLabel, gbc);
 
@@ -261,7 +202,7 @@ public class PanelUserAction extends JPanel {
 		userIdField = new JTextField();
 		userIdField.setEditable(false); // verhindert selbstständiges schreiben in der textbox
 		gbc.gridx = 1;
-		gbc.gridy = 6;
+		gbc.gridy = 4;
 		gbc.gridwidth = 1;
 		gbc.weightx = 0.7;
 		add(userIdField, gbc);
@@ -274,13 +215,78 @@ public class PanelUserAction extends JPanel {
 						JOptionPane.ERROR_MESSAGE);
 			} else {
 				userIdField.setText(generateUserId());
+				log.successLog("User-ID generiert: " + userIdField.getText(), manager);
 			}
 		});
 		gbc.gridx = 2;
-		gbc.gridy = 6;
+		gbc.gridy = 4;
 		gbc.gridwidth = 1;
 		gbc.weightx = 0.3;
 		add(userIdButton, gbc);
+
+		// -----------------------------------------------
+		// --- Komponenten für Zeile: y = 5 --- E-MAIL ---
+		// -----------------------------------------------
+
+		// E-Mail-Label
+		JLabel emailLabel = new JLabel("E-Mail");
+		gbc.gridx = 0;
+		gbc.gridy = 5;
+		gbc.gridwidth = 1;
+		add(emailLabel, gbc);
+
+		// E-Mail Textfeld -> generateEmailButton erzeugt email
+		emailField = new JTextField();
+		emailField.setEditable(false);
+		gbc.gridx = 1;
+		gbc.gridy = 5;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.7;
+		add(emailField, gbc);
+
+		// Create E-Mail Button
+		JButton emailButton = new JButton("E-Mail generieren");
+		emailButton.addActionListener(e -> {
+			if (nameField.getText().isEmpty() || vornameField.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Name und Vorname düfen nicht leer sein.", "Fehler",
+						JOptionPane.ERROR_MESSAGE);
+			} else {
+				emailField.setText(generateEmail());
+				log.successLog("E-Mail Adresse generieren: " + emailField.getText(), manager);
+			}
+		});
+		gbc.gridx = 2;
+		gbc.gridy = 5;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.3;
+		add(emailButton, gbc);
+
+		// -----------------------------------------------------------
+		// --- Komponenten für Zeile: y = 6 --- TELEFONNUMMER - PW ---
+		// -----------------------------------------------------------
+
+		JLabel telLabel = new JLabel("Telefonnummer");
+		gbc.gridx = 0;
+		gbc.gridy = 6;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.2;
+		add(telLabel, gbc);
+
+		// TelefonnummerField -> generateUserIDButton erzeugt userID
+		telField = new JTextField();
+		gbc.gridx = 1;
+		gbc.gridy = 6;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.4;
+		add(telField, gbc);
+
+		// PasswordField - Standartmäßig steht "Passwort" drin
+		passField = new JTextField("Passwort");
+		gbc.gridx = 2;
+		gbc.gridy = 6;
+		gbc.gridwidth = 1;
+		gbc.weightx = 0.4;
+		add(passField, gbc);
 
 		// ----------------------------------------------
 		// --- Komponenten für Zeile: y = 7 --- Rolle ---
@@ -300,12 +306,13 @@ public class PanelUserAction extends JPanel {
 		gbc.gridwidth = 1;
 		add(roleField, gbc);
 
-		// Button setzt ProjektLeiter auf true
+		// TODO Button Zeigt Liste aller Projekte -> Auswahl des Projektes ->
+		// Such-/Filteroptionen
+		// setzt ProjektLead des ausgewählten Projektes auf die generierte ID
+		// ID darf nicht leer sein
 		JButton setProjectLead = new JButton("Projektleiter setzen");
 		setProjectLead.addActionListener(e -> {
-			// TODO setzt Projektleitung des Neuen nutzers auf true
-			// erfordert Eingabe des Projektes
-			projectLead = true;
+			wMan.getCurrentProjectLeads();
 		});
 		gbc.gridx = 2;
 		gbc.gridy = 7;
@@ -316,7 +323,7 @@ public class PanelUserAction extends JPanel {
 		// --- Komponenten für Zeile: y = 8 ---
 		// ------------------------------------
 
-		JLabel hourlyRateLabel = new JLabel("Stundenlohn");
+		JLabel hourlyRateLabel = new JLabel("Stundenlohn - €");
 		gbc.gridx = 0;
 		gbc.gridy = 8;
 		gbc.gridwidth = 1;
@@ -337,13 +344,56 @@ public class PanelUserAction extends JPanel {
 		// Benutzer erstellen Button
 		JButton addUser = new JButton("Benutzer erstellen");
 		addUser.addActionListener(e -> {
-			// TODO: Felder auslesen -> new User("Werte aus den Feldern")
-			User newUser = new User(userIdField.getText(), nameField.getText(), vornameField.getText(),
-					emailField.getText(), telField.getText(), roleField.getText(), "pass123", projectLead,
-					Double.parseDouble(hourlyRateField.getText()));
-			uMan.addUser(newUser);
-			UserTableModel userModel = new UserTableModel(uMan.getUsers());
-			userTable.setModel(userModel);
+			// Überprüfe, ob alle erforderlichen Felder ausgefüllt sind
+			if (userIdField.getText().isEmpty() || nameField.getText().isEmpty() || vornameField.getText().isEmpty()
+					|| emailField.getText().isEmpty() || passField.getText().isEmpty()) {
+				// Zeige eine Fehlermeldung, wenn eines der Pflichtfelder leer ist
+				log.errorLog("Pflichtfelder (User-ID, Name, Vorname, E-Mail, Passwort) müssen ausgefüllt sein",
+						manager);
+				JOptionPane.showMessageDialog(null,
+						"Alle Pflichtfelder (User-ID, Name, Vorname, E-Mail, Passwort) müssen ausgefüllt sein.",
+						"Fehler", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			// Versuche, einen neuen Benutzer zu erstellen, nur wenn alle Felder ausgefüllt
+			// sind
+			try {
+				// neues User-Objekt und setze die Werte aus den Eingabefeldern
+				User user = new User();
+				user.setUserId(userIdField.getText());
+				user.setName(nameField.getText());
+				user.setVorname(vornameField.getText());
+				user.setEmail(emailField.getText());
+				user.setTel(telField.getText()); // Tel-Feld darf leer sein, wird gesetzt, wenn ausgefüllt
+				user.setProjectLead(projectLead); // Projektleiter-Flag
+				user.setPass(passField.getText());
+
+				// Versuche, den Stundensatz zu setzen. Falls das Feld leer ist, wird der
+				// Standardwert 0.0 gesetzt.
+				String hourlyRateText = hourlyRateField.getText();
+				if (!hourlyRateText.isEmpty()) {
+					user.setHourlyRate(Double.parseDouble(hourlyRateText));
+				} else {
+					user.setHourlyRate(0.0); // Standardwert
+				}
+				String role = roleField.getText();
+				if (role.equals("Hier soll ne Dropdown")) {
+					user.setRole(User.Role.User);
+				} else {
+					user.setRole(user.toRole(roleField.getText()));
+				}
+				// Benutzer in die Liste und Datenbank hinzufügen
+				uMan.addUser(user);
+				log.successLog("Benutzer hinzugefügt.", manager);
+				// Aktualisiere die UI, um den neuen Benutzer anzuzeigen oder Felder zu leeren
+				refreshAll();
+			} catch (NumberFormatException ex) {
+				// Falls der Stundenlohn nicht korrekt eingegeben wurde (kein Double), eine
+				// Fehlermeldung anzeigen
+				JOptionPane.showMessageDialog(null, "Stundenlohn muss eine Zahl sein.", "Fehler",
+						JOptionPane.ERROR_MESSAGE);
+			}
+
 		});
 		gbc.gridx = 1;
 		gbc.gridy = 9;
@@ -384,11 +434,17 @@ public class PanelUserAction extends JPanel {
 		// ausfüllt
 		gbc.gridx = 0;
 		gbc.gridy = 10;
-		gbc.gridwidth = 4; // Es soll die gesamte Breite einnehmen
+		gbc.gridwidth = 3; // Es soll die gesamte Breite einnehmen
 		gbc.weighty = 1.0; // Füllt den restlichen vertikalen Platz aus
 		gbc.fill = GridBagConstraints.BOTH; // Das Panel soll sich ausdehnen
 		JPanel emptySpace = new JPanel(); // Leeres Panel
 		add(emptySpace, gbc);
+	}
+
+	private void refreshAll() {
+		clearFields();
+		UserTableModel userModel = new UserTableModel(uMan.getUsers());
+		userTable.setModel(userModel);
 	}
 
 	private void clearFields() {
@@ -397,18 +453,90 @@ public class PanelUserAction extends JPanel {
 		userIdField.setText("");
 		emailField.setText("");
 		telField.setText("");
-		passField.setText("");
-		roleField.setText("");
+		passField.setText("Passwort");
+		roleField.setText("Hier soll ne Dropdown"); // TODO Dropdown mit allen Rollen aus User
 		projectLead = false;
 		hourlyRateField.setText("");
 	}
 
+	// Methode zur Generierung einer eindeutigen User-ID
 	private String generateUserId() {
-		return vornameField.getText().substring(0, Math.min(3, vornameField.getText().length())).toLowerCase()
+		// Initialisiere den Zähler bei 1
+		int counter = 1;
+		// Basis-ID erstellen, indem die ersten drei Buchstaben des Vornamens und
+		// Nachnamens genommen werden
+		// .toLowerCase() sorgt dafür, dass alles kleingeschrieben wird
+		String baseId = vornameField.getText().substring(0, Math.min(3, vornameField.getText().length())).toLowerCase()
 				+ nameField.getText().substring(0, Math.min(3, nameField.getText().length())).toLowerCase();
+		String genId = baseId + String.format("%02d", counter);
+
+		boolean exists = true; // Setze eine Flag-Variable, um zu überprüfen, ob die generierte ID bereits
+								// existiert
+		// Schleife, um sicherzustellen, dass eine eindeutige User-ID erstellt wird
+		while (exists) {
+			exists = false; // Setze exist-Flag auf false, um anzunehmen, dass die ID einzigartig ist
+
+			// Durchlaufe alle bestehenden Benutzer in der Liste
+			for (User user : users) {
+				// Falls die generierte ID bereits einem existierenden User zugewiesen ist
+				if (user.getUserId().equals(genId)) {
+					counter++; // Erhöhe den Zähler, um eine neue ID zu generieren
+					// Erstelle die neue ID mit dem aktualisierten Zähler
+					genId = baseId + String.format("%02d", counter);
+					// Setze das exist-Flag auf true, um anzuzeigen, dass ein Konflikt existiert und
+					// die Schleife weiterläuft
+					exists = true;
+					// Breche die Schleife ab, da eine Kollision erkannt wurde und eine neue ID
+					// generiert werden muss
+					break;
+				}
+			}
+		}
+		// Wenn die Schleife abgeschlossen ist, haben wir eine eindeutige ID und geben
+		// sie zurück
+		return genId;
 	}
 
+	// Methode zur Generierung einer eindeutigen E-Mail-Adresse
 	private String generateEmail() {
-		return vornameField.getText().substring(0, 1).toLowerCase() + nameField.getText().toLowerCase() + "@email.com";
+		// Hole den Nachnamen aus dem Textfeld und wandle ihn in Kleinbuchstaben um
+		String lastName = nameField.getText().toLowerCase();
+		// Hole den Vornamen aus dem Textfeld
+		String firstName = vornameField.getText().toLowerCase();
+		int counter = 1; // Startzähler für den Buchstabenindex des Vornamens
+		String email = firstName.substring(0, counter) + lastName + "@email.com";
+		// Flag zum Überprüfen, ob die generierte E-Mail bereits existiert
+		boolean exists = true;
+		// Schleife, um eine eindeutige E-Mail-Adresse zu generieren
+		while (exists) {
+			exists = false;
+			// Durchlaufe alle vorhandenen Benutzer, um Konflikte zu finden
+			for (User user : users) {
+				// Wenn die E-Mail bereits existiert, setze das exists-Flag auf true
+				if (user.getEmail().equals(email)) {
+					// Erhöhe den Zähler, um den nächsten Buchstaben des Vornamens zu verwenden
+					counter++;
+
+					// Vermeide IndexOutOfBoundsException: Falls der Vorname kürzer ist, wird nur
+					// bis zur Länge des Vornamens gegangen
+					if (counter <= firstName.length()) {
+						email = firstName.substring(0, counter) + lastName + "@email.com";
+					} else {
+						// Falls der Vorname vollständig aufgebraucht ist, kann alternativ ein
+						// numerischer Wert angehängt werden
+						email = firstName + lastName + counter + "@email.com";
+					}
+					// Markiere, dass es noch einen Konflikt gibt
+					exists = true;
+
+					// Breche die Schleife ab, damit die neue E-Mail überprüft werden kann
+					break;
+				}
+			}
+		}
+
+		// Gebe die eindeutige E-Mail-Adresse zurück
+		return email;
 	}
+
 }

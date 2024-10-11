@@ -8,8 +8,7 @@ public class Project {
 	private int projectid;
 	private String title;
 	private String description;
-	private String projectLead; // UserID des Projektleiters
-	private String projectLeadContact; // Name, Vorname und E-Mail des Projekleiters
+	private User projectLead; // Projektleiters als User
 	private boolean isCompleted; // Projekt fertig? 
 	private LocalDate startDate; // Startdatum
 	private LocalDate dueDate; // Abgabetermin
@@ -23,7 +22,7 @@ public class Project {
 	}
 
 	// Konstruktor mit allen Parametern
-	public Project(int projectId, String title, String description, String projectlead, boolean isCompleted,
+	public Project(int projectId, String title, String description, User projectlead, boolean isCompleted,
 			LocalDate startDate, LocalDate dueDate, int taskCount, int memberCount) {
 		setProjectId(projectId);
 		setTitle(title);
@@ -60,11 +59,11 @@ public class Project {
 		this.description = description;
 	}
 
-	public String getProjectLead() {
+	public User getProjectLead() {
 		return projectLead;
 	}
 
-	public void setProjectLead(String projectLead) {
+	public void setProjectLead(User projectLead) {
 		this.projectLead = projectLead;
 	}
 
@@ -122,13 +121,5 @@ public class Project {
 
 	public void setMemberCount(int memberCount) {
 		this.memberCount = memberCount;
-	}
-
-	public String getProjectLeadContact() {
-		return projectLeadContact;
-	}
-
-	public void setProjectLeadContact(String projectLeadContact) {
-		this.projectLeadContact = projectLeadContact;
 	}
 }

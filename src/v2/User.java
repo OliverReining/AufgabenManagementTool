@@ -12,7 +12,7 @@ public class User {
 //	private String hashedPass; // TODO: Hash-Funktion, um die Passwörter nicht in klarschrift in die DB zu geben
 	// TODO Methode um die gehashten PW auszulesen und zu vergleichen
 	private String pass;
-	private String role; // TODO: weitere Rollen hinzufügen, basierend darauf zeigt GUI anderes
+	private Role role;
 	private boolean projectLead; // wenn ProjectLead eines aktuellen Projekt -> true
 	private double hourlyRate; // StundenSatz des Nutzers
 
@@ -35,7 +35,7 @@ public class User {
 	// erledigte Projekte
 
 	public enum Role {
-		Developer, Junior_Dev, Senior_Dev, Shiftlead, Teamlead, Manager, Technican, DB_Admin, HR,
+		Developer, Junior_Dev, Senior_Dev, Shiftlead, Teamlead, Manager, Technican, DB_Admin, HR, User
 	}
 
 	public User() {
@@ -43,7 +43,7 @@ public class User {
 	}
 
 	// Konstruktor mit allen Werten um
-	public User(String userId, String name, String vorname, String email, String tel, String pass, String role,
+	public User(String userId, String name, String vorname, String email, String tel, String pass, Role role,
 			boolean projectLead, double hourlyRate) {
 		setUserId(userId);
 		setName(name);
@@ -58,8 +58,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return getUserId() + "\n" + getName() + "\n " + getVorname() + "\n" + getEmail() + "\n" + getTel() + "\n"
-				+ getPass() + "\n" + getRole() + "\n" + isProjectLead() + "\n" + getHourlyRate();
+		return "ID: " + getUserId() + ", NAME: " + getName() + ", VORNAME: " + getVorname() + ", EMAIL: " + getEmail() + ", TELEFON: " + getTel() + ", PASSWORT: "
+				+ getPass() + ", ROLLE: " + getRole() + ", PROJEKTLEITER: " + isProjectLead() + ", STUNDENLOHN: " + getHourlyRate();
 	}
 
 	public String getUserInfo() {
@@ -105,14 +105,6 @@ public class User {
 
 	public void setPass(String pass) {
 		this.pass = pass;
-	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
 	}
 
 	public boolean isProjectLead() {
@@ -185,5 +177,69 @@ public class User {
 
 	public void setTel(String tel) {
 		this.tel = tel;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public Role toRole(String roleString) {
+		// Developer, Junior_Dev, Senior_Dev, Shiftlead, Teamlead, Manager, Technican,
+		// DB_Admin, HR,
+
+		switch (roleString) {
+		case "Developer":
+			return User.Role.Developer;
+		case "Junior Dev":
+			return User.Role.Junior_Dev;
+		case "Senior Dev":
+			return User.Role.Senior_Dev;
+		case "Shiftlead":
+			return User.Role.Shiftlead;
+		case "Teamlead":
+			return User.Role.Teamlead;
+		case "Manager":
+			return User.Role.Manager;
+		case "Technican":
+			return User.Role.Technican;
+		case "DB-Admin":
+			return User.Role.DB_Admin;
+		case "HR":
+			return User.Role.HR;
+		default:
+			return User.Role.User;
+		}
+	}
+
+	public String toRoleString(Role role) {
+		// Developer, Junior_Dev, Senior_Dev, Shiftlead, Teamlead, Manager, Technican,
+		// DB_Admin, HR,
+
+		switch (role) {
+		case Developer:
+			return "Developer";
+		case Junior_Dev:
+			return "Junior_Dev";
+		case Senior_Dev:
+			return "Senior_Dev";
+		case Shiftlead:
+			return "Shiftlead";
+		case Teamlead:
+			return "Teamlead";
+		case Manager:
+			return "Manager";
+		case Technican:
+			return "Technican";
+		case DB_Admin:
+			return "DB-Admin";
+		case HR:
+			return "HR";
+		default:
+			return "user";
+		}
 	}
 }

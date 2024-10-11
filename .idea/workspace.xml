@@ -5,47 +5,49 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d622549a-394d-468d-9f75-986e316e19d2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/AdminGUI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/AdminModeFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/AdminModeFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/Analytics.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/DBLoginGUI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/DataPrep.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/DatabaseConnectionOld.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/ProjectManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/TaskManagerOld.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/UpdateUserFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/UpdateUserFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/UserGUI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/UserLogin.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v1/UserManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v2/DatabaseConnection.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/ams.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/ams.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/exampleData.txt" beforeDir="false" afterPath="$PROJECT_DIR$/sql/exampleData.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/structure.txt" beforeDir="false" afterPath="$PROJECT_DIR$/sql/structure.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v1/AdminGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v1/AdminGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/DBLoginGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/DBLoginGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/DatabaseConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/FrameDisplayProjects.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/FrameDisplayTasks.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/FrameEditUser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/FrameUserOverview.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/FrameUserOverview.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/GUIFullScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/GUIFullScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/LogManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/LogManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/PanelUserAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/PanelUserAction.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/v2/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/Project.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v2/SQL.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/v2/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/ProjectManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/ProjectManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/v2/TaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/TaskManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/v2/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/test/test.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/test/test.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/AdminGUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/AdminModeFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/AdminModeFrame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/Analytics.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/DBLoginGUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/DataPrep.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/DatabaseConnectionOld.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/ProjectManager.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/TaskManagerOld.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/UpdateUserFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/UpdateUserFrame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/UserGUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/UserLogin.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v1/UserManager.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v2/DatabaseConnection.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/UserManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/UserManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/UserTableModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/UserTableModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/v2/WorkManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/v2/WorkManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/maven/AufgabenmanagementTool/AufgabenmanagementTool/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/META-INF/maven/AufgabenmanagementTool/AufgabenmanagementTool/pom.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v1/AdminGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v1/AdminGUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/DBLoginGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/DBLoginGUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/DatabaseConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/DatabaseConnection.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/FrameDisplayProjects.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/FrameDisplayTasks.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/FrameEditUser.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/FrameUserOverview.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/FrameUserOverview.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/GUIFullScreen$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/GUIFullScreen$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/GUIFullScreen.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/GUIFullScreen.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/LogManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/LogManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/PanelUserAction.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/PanelUserAction.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/v2/Project.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/Project.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v2/SQL.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/v2/Task.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/Task.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/ProjectManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/ProjectManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/ProjectTableModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/ProjectTableModel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/v2/TaskManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/TaskManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/User$Role.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/User$Role.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/v2/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/UserManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/UserManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/UserTableModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/UserTableModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/v2/WorkManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/v2/WorkManager.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
