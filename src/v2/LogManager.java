@@ -113,7 +113,7 @@ public class LogManager {
 			Files.write(filePath, getLogsAsString().getBytes(), StandardOpenOption.CREATE);
 //			JOptionPane.showMessageDialog(null, "Log gespeichert: " + filePath.toString());
 		} catch (IOException e) {
-			errorLog("Logs konnten nicht gespeichert", Log.Manager.LOG_MANAGER);
+			errorLog("Logs konnten nicht gespeichert werden.", Log.Manager.LOG_MANAGER);
 			log(e.getMessage(), Log.LogType.INFO, Log.Manager.LOG_MANAGER);
 		}
 

@@ -190,7 +190,7 @@ public class UserManager {
 				log.log("User List updated: " + user.toString(), Log.LogType.INFO, managerType);
 				try {
 					log.log("try sqlUpdate:", Log.LogType.INFO, managerType);
-					sqlUpdate(currentUser, true);
+					sqlUpdate(currentUser, false);
 				} catch (SQLException e) {
 					log.sqlExceptionLog(e, managerType);
 				}

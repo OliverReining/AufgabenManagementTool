@@ -15,13 +15,8 @@ public class GUIFullScreen extends JFrame {
 	private TaskManager tMan;
 	private WorkManager wMan;
 	private LogManager log;
-	private JTable userTable;
-	private JTable projectTable;
-	private JTable taskTable;
-	private JTextArea displayArea;
-	private JTextArea userDisplayArea;
-	private JTextArea projectDisplayArea;
-	private JTextArea taskDisplayArea;
+	private JTable userTable, projectTable, taskTable;
+	private JTextArea displayArea, userDisplayArea, projectDisplayArea, taskDisplayArea;
 	private ArrayList<User> users;
 	private ArrayList<Project> projects;
 	private ArrayList<Task> tasks;
@@ -257,7 +252,8 @@ public class GUIFullScreen extends JFrame {
 		displayArea = new JTextArea();
 		displayArea.setEditable(false);
 //		displayArea.setMaximumSize(new Dimension(400, 800));
-//		displayArea.setMaximumSize(null);
+		displayArea.setLineWrap(true); // Zeilenumbruch im log, damit das ding net immer eskaliert
+		displayArea.setWrapStyleWord(true); // nur zwischen Wörtern Zeilenumbruch machen
 		JScrollPane scrollPane = new JScrollPane(displayArea);
 		displayPanel.add(scrollPane, BorderLayout.CENTER);
 
