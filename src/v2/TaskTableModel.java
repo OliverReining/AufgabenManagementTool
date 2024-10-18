@@ -40,7 +40,7 @@ public class TaskTableModel extends AbstractTableModel {
 		case 2:
 			return task.getDescription();
 		case 3:
-			return task.getProjectId();
+			return task.getProject().getProjectId();
 		case 4:
 			return task.getDueDate();
 		case 5:

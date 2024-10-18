@@ -17,6 +17,8 @@ public class TaskManager {
 	private ArrayList<Task> tasks; // Liste aller Aufgaben, die in der Anwendung verwendet werden
 	private DatabaseConnection dbConnect; // Verbindung zur Datenbank
 	private LogManager log; // LogManager zum Protokollieren von Informationen und Fehlern
+	private ProjectManager pMan;
+	private UserManager uMan;
 
 	// Konstruktoren
 	public TaskManager() {
@@ -28,9 +30,11 @@ public class TaskManager {
 		getAllTasks(); // Lädt Aufgaben aus der Datenbank
 	}
 
-	public TaskManager(DatabaseConnection dbConnect, LogManager log) {
+	public TaskManager(DatabaseConnection dbConnect, LogManager log, ProjectManager pMan, UserManager uMan) {
 		this.log = log; // Setzt LogManager
 		this.dbConnect = dbConnect; // Setzt die Datenbankverbindung
+		this.pMan = pMan;
+		this.uMan = uMan;
 		getAllTasks(); // Lädt Aufgaben aus der Datenbank
 	}
 
@@ -49,7 +53,7 @@ public class TaskManager {
 				task.setTaskId(rs.getInt("taskid"));
 				task.setTitle(rs.getString("title"));
 				task.setDescription(rs.getString("description"));
-				task.setProjectId(rs.getInt("projectid"));
+				task.setProject(pMan.getProjectById(rs.getInt("projectid")));
 				task.setDueDate(rs.getDate("dueDate").toLocalDate());
 				task.setPriority(task.toPriority(rs.getString("priority")));
 				task.setCompleted(rs.getBoolean("isCompleted"));
@@ -90,7 +94,7 @@ public class TaskManager {
 		Task task = new Task(); // Neuer Task initialisieren und Parameter setzen
 		task.setTitle(title);
 		task.setDescription(description);
-		task.setProjectId(projectId);
+		task.setProject(pMan.getProjectById(projectId));
 		task.setDueDate(dueDate);
 		task.setPriority(priority);
 		task.setCompleted(isCompleted);

@@ -1,7 +1,7 @@
 package v2;
 
 import java.sql.*;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.*;
 
 //Manager-Klasse für spezielle Abfragen, die viele Parameter benötigen
@@ -32,7 +32,7 @@ public class WorkManager {
 		this.dbConnect = dbConnect; // Setze Datenbankverbindung
 		uMan = new UserManager(dbConnect, log); // Initialisiere UserManager mit Datenbankverbindung
 		pMan = new ProjectManager(dbConnect, log, uMan); // Initialisiere ProjectManager mit Datenbankverbindung
-		tMan = new TaskManager(dbConnect, log); // Initialisiere TaskManager mit Datenbankverbindung
+		tMan = new TaskManager(dbConnect, log, pMan, uMan); // Initialisiere TaskManager mit Datenbankverbindung
 		getTaskUserFromDB(); // Lade Worktime-Daten
 	}
 
@@ -129,16 +129,26 @@ public class WorkManager {
 		return allProjectLeads;
 	}
 
-	// TODO getWorktimeByUser(User currentUser)
-	// Methode, die alle Arbeitszeiten zurückgibt, die von einem Nutzer existieren
-	// Dazu gehört: Berechnung der Gesamtarbeitszeit eines Benutzers
-
 	// TODO getTasksByUser(User currentUser)
 	// Methode, die alle Aufgaben zurückgibt, an denen ein Benutzer arbeitet oder
 	// gearbeitet hat
 	// Dazu gehört:
 	// Arbeitszeiten des Benutzers aus dem WorktimeManager abrufen
 	// dazugehörigen Aufgaben aus dem TaskManager suchen
+	public ArrayList<Task> getTasksByUser(User currentUser) {
+		ArrayList<Task> tasksByUser = new ArrayList<>();
+		for (Worktime time : times) {
+			// Alle Arbeitszeiten des Users aufrufen
+			if (time.getUser().equals(currentUser)) { // wenn User übereinstimmt Task holen und in Liste schreiben
+				Task task = time.getTask();
+				// wenn Task bereits in der Liste -> überspringen
+				if (!tasksByUser.contains(task)) { // bzw wenn nicht in Liste -> hinzufügen, ist leichter so rum 
+					tasksByUser.add(task);
+				}
+			}
+		}
+		return tasksByUser;
+	}
 
 	// TODO getProjectsByUser(User currentUser)
 	// Methode, die alle Projekte zurückgibt, an denen ein Benutzer arbeitet oder
@@ -147,6 +157,20 @@ public class WorkManager {
 	// Arbeitszeiten des Benutzers aus dem WorktimeManager abrufen
 	// dazugehörigen Aufgaben aus dem TaskManager suchen
 	// Aus den Aufgaben die Projekte ableiten und zurückgeben
+	public ArrayList<Project> getProjectsByUser(User currentUser) {
+		ArrayList<Project> projectsByUser = new ArrayList<>();
+		ArrayList<Task> tasksByUser = getTasksByUser(currentUser);
+		for(Task task : tasksByUser) {
+			
+		}
+
+		return projectsByUser;
+	}
+
+	// TODO getProjectTeamMembers(Project project)
+	// Liste aller User die an einer Aufgabe im Projekt Arbeitszeiten haben
+	// Dazu gehört:
+	//
 
 	// Methode um die Gesamtarbeitszeit eines Benutzers an einem bestimmten Projekt
 	// zu berechnen
@@ -221,6 +245,26 @@ public class WorkManager {
 		// TODO logEndTime()
 	}
 
+	// getWorktimeByUser(User currentUser)
+	// Methode, die alle Arbeitszeiten zurückgibt, die von einem Nutzer existieren
+	// Dazu gehört: Berechnung der Gesamtarbeitszeit eines Benutzers
+	// über Duration aus java.time
+	public Duration getWorktimeByUser(User user) {
+		Duration totalWorktime = Duration.ZERO; // Setzt worktime auf null (mit duration.zero, damit nicht jedes mal
+												// null überprüfung in der Schleife)
+		for (Worktime time : times) {
+			// wenn User übereinstimmt und eine der Datensatz einen endzeitpunkt hat
+			if (time.getUser().equals(user) && time.getEndTime() != null) {
+				Duration workDuration = Duration.between(time.getStartTime(), time.getEndTime()); // Dauer eines
+																									// Arbeitsprozesses
+																									// ermitteln
+				totalWorktime = totalWorktime.plus(workDuration); // addiert die Dauer zur Gesamtzeit hinzu
+			}
+		}
+		return totalWorktime;
+
+	}
+
 	// alle Arbeitszeiten einer Aufgabe
 	public void getWorktimeByTask(Task task) {
 		// TODO alle Arbeitszeiten einer Aufgabe
@@ -228,11 +272,7 @@ public class WorkManager {
 
 	// alle Arbeitszeiten der Nutzer einer Aufgabe
 	public void getUsersWorktimeByTask(Task task, ArrayList<User> users) {
-		// TODO alle Arbeitszeiten einer Aufgabe
-	}
-
-	public void getWorktimeByUser(User user) {
-		// TODO alle Arbeitszeiten eines Benutzers
+		// TODO alle Arbeitszeiten aller Nutzer einer Aufgabe
 	}
 
 	public void getWorktimeByTaskAndUser(Task task, User user) {

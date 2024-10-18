@@ -10,7 +10,8 @@ public class Task {
 	private int taskId;
 	private String title;
 	private String description;
-	private int projectId;
+//	private int projectId;
+	private Project project;
 	private LocalDate dueDate;
 	private Priority priority;
 	private boolean isCompleted;
@@ -30,12 +31,12 @@ public class Task {
 		// leerer Konstruktor
 	}
 
-	public Task(int taskId, String title, String description, int projectId, LocalDate dueDate, Priority priority,
+	public Task(int taskId, String title, String description, Project project, LocalDate dueDate, Priority priority,
 			boolean isCompleted, int plannedTime, boolean isCritical) {
 		setTaskId(taskId);
 		setTitle(title);
 		setDescription(description);
-		setProjectId(projectId);
+		setProject(project);
 		setDueDate(dueDate);
 		setPriority(priority);
 		setCompleted(isCompleted);
@@ -56,9 +57,9 @@ public class Task {
 		return description;
 	}
 
-	public int getProjectId() {
-		return projectId;
-	}
+//	public int getProjectId() {
+//		return projectId;
+//	}
 
 	public boolean isCompleted() {
 		return isCompleted;
@@ -76,9 +77,9 @@ public class Task {
 		this.description = description;
 	}
 
-	public void setProjectId(int projectId) {
-		this.projectId = projectId;
-	}
+//	public void setProjectId(int projectId) {
+//		this.projectId = projectId;
+//	}
 
 	public void setCompleted(boolean completed) {
 		isCompleted = completed;
@@ -181,6 +182,14 @@ public class Task {
 		default:
 			return null;
 		}
+	}
+
+	public Project getProject() {
+		return project;
+	}
+
+	public void setProject(Project project) {
+		this.project = project;
 	}
 
 }

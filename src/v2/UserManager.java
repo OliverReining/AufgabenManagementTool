@@ -344,25 +344,6 @@ public class UserManager {
 		return allTeamLeads;
 	}
 
-	// TODO getWorktimeByUser(User currentUser)
-	// Methode, die alle Arbeitszeiten zurückgibt, die von einem Nutzer existieren
-	// Dazu gehört: Berechnung der Gesamtarbeitszeit eines Benutzers
-
-	// TODO getTasksByUser(User currentUser)
-	// Methode, die alle Aufgaben zurückgibt, an denen ein Benutzer arbeitet oder
-	// gearbeitet hat
-	// Dazu gehört:
-	// Arbeitszeiten des Benutzers aus dem WorktimeManager abrufen
-	// dazugehörigen Aufgaben aus dem TaskManager suchen
-
-	// TODO getProjectsByUser(User currentUser)
-	// Methode, die alle Projekte zurückgibt, an denen ein Benutzer arbeitet oder
-	// gearbeitet hat
-	// Dazu gehört:
-	// Arbeitszeiten des Benutzers aus dem WorktimeManager abrufen
-	// dazugehörigen Aufgaben aus dem TaskManager suchen
-	// Aus den Aufgaben die Projekte ableiten und zurückgeben
-
 	// TODO searchUser(String attribute, String value)
 	// - Methode um Benutzer anhand eines Attributs in der Liste zu suchen (z.B.
 	// Name oder E-Mail)

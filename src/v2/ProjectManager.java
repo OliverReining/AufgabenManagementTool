@@ -115,8 +115,12 @@ public class ProjectManager {
 	// - Projekt aus der lokalen ArrayList entfernen
 	// - Exception Handling hinzufügen, falls das Löschen fehlschlägt
 
-	// TODO Methode um Projektdaten zu aktualisieren und in die Datenbank
-	// hochzuladen
+	// TODO updateProject(Project project)
+	// - Methode um Projektdaten in der Datenbank zu aktualisieren
+	// - SQL-UPDATE-Befehl vorbereiten, um die geänderten Projektdaten in der
+	// Datenbank zu speichern
+	// - Lokale Projektdaten in der ArrayList aktualisieren
+	// - Exception Handling für mögliche Datenbankfehler hinzufügen
 	public void updateProject(Project selectedProject) {
 		for (Project project : projects) {
 			if (project.equals(selectedProject)) {
@@ -165,13 +169,6 @@ public class ProjectManager {
 		// multiplizieren
 		return 0.0; // Platzhalter
 	}
-
-	// TODO updateProject(Project project)
-	// - Methode um Projektdaten in der Datenbank zu aktualisieren
-	// - SQL-UPDATE-Befehl vorbereiten, um die geänderten Projektdaten in der
-	// Datenbank zu speichern
-	// - Lokale Projektdaten in der ArrayList aktualisieren
-	// - Exception Handling für mögliche Datenbankfehler hinzufügen
 
 	// TODO getProjectById(int projectId)
 	// - Methode um ein Projekt anhand seiner ID aus der Datenbank abzurufen

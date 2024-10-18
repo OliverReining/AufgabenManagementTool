@@ -51,7 +51,7 @@ public class GUIFullScreen extends JFrame {
 			// und LogManager um einen globalen Log zu schreiben
 			uMan = new UserManager(dbConnect, log);
 			pMan = new ProjectManager(dbConnect, log, uMan);
-			tMan = new TaskManager(dbConnect, log);
+			tMan = new TaskManager(dbConnect, log, pMan, uMan);
 			// WorkManager mit den anderen ManagerKlassen initialisieren,
 			// Muss auf die gleichen Daten zugreifen können
 			wMan = new WorkManager(dbConnect, log, uMan, pMan, tMan);

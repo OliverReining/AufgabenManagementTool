@@ -42,7 +42,7 @@ public class ProjectTableModel extends AbstractTableModel {
 		case 4:
 			return project.isCompleted() ? "Ja" : "Nein";
 		case 5:
-			return project.getProjectLead();
+			return project.getProjectLead().getUserInfo();
 		default:
 			return null;
 		}
