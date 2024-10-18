@@ -142,7 +142,7 @@ public class WorkManager {
 			if (time.getUser().equals(currentUser)) { // wenn User übereinstimmt Task holen und in Liste schreiben
 				Task task = time.getTask();
 				// wenn Task bereits in der Liste -> überspringen
-				if (!tasksByUser.contains(task)) { // bzw wenn nicht in Liste -> hinzufügen, ist leichter so rum 
+				if (!tasksByUser.contains(task)) { // bzw wenn nicht in Liste -> hinzufügen, ist leichter so rum
 					tasksByUser.add(task);
 				}
 			}
@@ -160,18 +160,15 @@ public class WorkManager {
 	public ArrayList<Project> getProjectsByUser(User currentUser) {
 		ArrayList<Project> projectsByUser = new ArrayList<>();
 		ArrayList<Task> tasksByUser = getTasksByUser(currentUser);
-		for(Task task : tasksByUser) {
+		for (Task task : tasksByUser) {
 			Project project = task.getProject();
-			if(!projectsByUser.contains(project)) {
+			if (!projectsByUser.contains(project)) {
 				projectsByUser.add(project);
 			}
 		}
 
 		return projectsByUser;
 	}
-
-	// TODO getProjectTeamMembers(Project project)
-	// Liste aller User die an einer Aufgabe im Projekt Arbeitszeiten haben
 
 	// Methode um die Gesamtarbeitszeit eines Benutzers an einem bestimmten Projekt
 	// zu berechnen
@@ -180,14 +177,39 @@ public class WorkManager {
 		// Benutzers an einem Projekt
 	}
 
+	// TODO getProjectTeamMembers(Project project)
+	// Liste aller User die an einer Aufgabe im Projekt Arbeitszeiten haben
 	// Methode um alle Benutzer zurückzugeben, die an einem bestimmten Projekt
 	// gearbeitet haben
-	public void getAllUsersWithWorktimeOnProject(Project project) {
-		// TODO: Implementierung um alle Benutzer zu finden, die an einem Projekt
-		// gearbeitet haben
-		// - Aufgaben des Projekts über TaskManager abrufen
-		// - Arbeitszeiten für jede Aufgabe über WorktimeManager durchsuchen
-		// - Benutzer, die in diesen Arbeitszeiten enthalten sind, sammeln
+	// Implementierung um alle Benutzer zu finden, die an einem Projekt
+	// gearbeitet haben
+	// - Aufgaben des Projekts über TaskManager abrufen
+	// - Arbeitszeiten für jede Aufgabe über WorktimeManager durchsuchen
+	// - Benutzer, die in diesen Arbeitszeiten enthalten sind, sammeln
+	public ArrayList<User> getProjectTeamMembers(Project project) {
+		ArrayList<User> projectTeamMembers = new ArrayList<>();
+		ArrayList<Task> projectTasks = tMan.getTasksByProject(project);
+		for (Task task : projectTasks) {
+			for (User user : task.getTeamMembers()) {
+				if (!projectTeamMembers.contains(user)) {
+					projectTeamMembers.add(user);
+				}
+			}
+		}
+		return projectTeamMembers;
+	}
+
+	public ArrayList<User> getTaskTeamMembers(Task task) {
+		ArrayList<User> taskTeamMembers = new ArrayList<>();
+		for (Worktime time : times) {
+			if (time.getTask().equals(task)) {
+				User teamMember = time.getUser();
+				if (!taskTeamMembers.contains(teamMember)) {
+					taskTeamMembers.add(teamMember);
+				}
+			}
+		}
+		return taskTeamMembers;
 	}
 
 	// Methode zur Berechnung der Effizienz eines Benutzers auf einem Projekt

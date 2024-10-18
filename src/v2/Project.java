@@ -23,7 +23,7 @@ public class Project {
 
 	// Konstruktor mit allen Parametern
 	public Project(int projectId, String title, String description, User projectlead, boolean isCompleted,
-			LocalDate startDate, LocalDate dueDate, int taskCount, int memberCount) {
+			LocalDate startDate, LocalDate dueDate) {
 		setProjectId(projectId);
 		setTitle(title);
 		setDescription(description);
@@ -31,8 +31,6 @@ public class Project {
 		setCompleted(isCompleted);
 		setStartDate(startDate);
 		setDueDate(dueDate);
-		setTaskCount(taskCount);
-		setMemberCount(memberCount);
 	}
 
 	public int getProjectId() {

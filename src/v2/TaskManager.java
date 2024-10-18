@@ -128,10 +128,16 @@ public class TaskManager {
 
 	// Methode zum Abrufen aller Aufgaben eines bestimmten Projekts
 	public ArrayList<Task> getTasksByProject(Project project) {
-		ArrayList<Task> tasksByProject = new ArrayList<>();
-		// TODO: SQL-SELECT-Anweisung hier implementieren, um die Aufgaben für das
-		// angegebene Projekt zu laden
-		return tasksByProject;
+		ArrayList<Task> projectTasks = new ArrayList<>();
+
+		for (Task task : tasks) {
+			if (task.getProject().equals(project)) {
+				if (!projectTasks.contains(task)) {
+					projectTasks.add(task);
+				}
+			}
+		}
+		return projectTasks;
 	}
 
 	// TODO addTask(Task task)

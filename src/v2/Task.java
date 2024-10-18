@@ -109,21 +109,21 @@ public class Task {
 		this.isCritical = isCritical;
 	}
 
-	public ArrayList<User> getTeamMembers() {
-		return teamMembers;
-	}
+//	public ArrayList<User> getTeamMembers() {
+//		return teamMembers;
+//	}
 
-	public void setTeamMembers(ArrayList<User> teamMembers) {
-		this.teamMembers = teamMembers;
-	}
+//	public void setTeamMembers(ArrayList<User> teamMembers) {
+//		this.teamMembers = teamMembers;
+//	}
 
-	public int getMemberCount() {
-		return memberCount;
-	}
+//	public int getMemberCount() {
+//		return memberCount;
+//	}
 
-	public void setMemberCount(int memberCount) {
-		this.memberCount = memberCount;
-	}
+//	public void setMemberCount(int memberCount) {
+//		this.memberCount = memberCount;
+//	}
 
 	public ArrayList<String> getTODOs() {
 		return TODOs;
@@ -190,6 +190,22 @@ public class Task {
 
 	public void setProject(Project project) {
 		this.project = project;
+	}
+
+	public ArrayList<User> getTeamMembers() {
+		return teamMembers;
+	}
+
+	public void setTeamMembers(ArrayList<User> teamMembers) {
+		this.teamMembers = teamMembers;
+	}
+
+	public int getMemberCount() {
+		return memberCount;
+	}
+
+	public void setMemberCount(int memberCount) {
+		this.memberCount = memberCount;
 	}
 
 }
