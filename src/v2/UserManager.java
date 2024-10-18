@@ -190,7 +190,7 @@ public class UserManager {
 				log.log("User List updated: " + user.toString(), Log.LogType.INFO, managerType);
 				try {
 					log.log("try sqlUpdate:", Log.LogType.INFO, managerType);
-					sqlUpdate(currentUser, false);
+					sqlUpdate(currentUser, true);
 				} catch (SQLException e) {
 					log.sqlExceptionLog(e, managerType);
 				}
@@ -222,43 +222,44 @@ public class UserManager {
 			} catch (SQLException e) {
 				throw new SQLException(sql + " konnte nicht ausgeführt werden.", e);
 			}
-		}
-		log.log("Versuche dynamische SQL-Query auszuführen.", Log.LogType.INFO, managerType);
-		// Dynamischen SQL-Query aufbauen
-		StringBuilder sqlBuilder = new StringBuilder("UPDATE ").append(desiredTable).append(" SET ");
-		for (int i = 0; i < columnNames.size(); i++) {
-			String column = columnNames.get(i).toLowerCase().strip().replaceAll("[\\s-]+", "");
+		} else {
+			log.log("Versuche dynamische SQL-Query auszuführen.", Log.LogType.INFO, managerType);
+			// Dynamischen SQL-Query aufbauen
+			StringBuilder sqlBuilder = new StringBuilder("UPDATE ").append(desiredTable).append(" SET ");
+			for (int i = 0; i < columnNames.size(); i++) {
+				String column = columnNames.get(i).toLowerCase().strip().replaceAll("[\\s-]+", "");
 
-			// Überspringe die "userid"-Spalte (oder die Primärschlüsselspalte, die nicht
-			// aktualisiert werden soll)
-			if (column.equals("userid")) {
-				continue; // Überspringen
+				// Überspringe die "userid"-Spalte
+				if (column.equals("userid")) {
+					continue; // Überspringen
+				}
+				sqlBuilder.append(columnNames.get(i)).append(" = ?");
+				if (i < columnNames.size() - 1) {
+					sqlBuilder.append(", ");
+				}
 			}
-			sqlBuilder.append(columnNames.get(i)).append(" = ?");
-			if (i < columnNames.size() - 1) {
-				sqlBuilder.append(", ");
+
+			// Entfernt das letzte Komma, falls es existiert
+			if (sqlBuilder.charAt(sqlBuilder.length() - 2) == ',') {
+				sqlBuilder.setLength(sqlBuilder.length() - 2); // entfernt das letzte ", "
 			}
-		}
 
-		// Entfernt das letzte Komma, falls es existiert
-		if (sqlBuilder.charAt(sqlBuilder.length() - 2) == ',') {
-			sqlBuilder.setLength(sqlBuilder.length() - 2); // entfernt das letzte ", "
-		}
+			// WHERE-Bedingung hinzufügen (angenommen columnNames.get(0) ist der
+			// Primärschlüssel, z.B. 'userid')
+			sqlBuilder.append(" WHERE ").append(columnNames.get(0)).append(" = ?;");
 
-		// WHERE-Bedingung hinzufügen (angenommen columnNames.get(0) ist der
-		// Primärschlüssel, z.B. 'userid')
-		sqlBuilder.append(" WHERE ").append(columnNames.get(0)).append(" = ?;");
+			String sql = sqlBuilder.toString();
 
-		String sql = sqlBuilder.toString();
+			log.log(sql, Log.LogType.SUCCESS, managerType);
+			// PreparedStatement vorbereiten
+			try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(sql)) {
+				setUserParameters(stmt, columnNames, user);
+				stmt.executeUpdate();
+				log.successLog(sql, managerType);
+			} catch (SQLException e) {
+				throw new SQLException(sql + " konnte nicht ausgeführt werden.", e);
+			}
 
-		log.log(sql, Log.LogType.SUCCESS, managerType);
-		// PreparedStatement vorbereiten
-		try (PreparedStatement stmt = dbConnect.getConnection().prepareStatement(sql)) {
-			setUserParameters(stmt, columnNames, user);
-			stmt.executeUpdate();
-			log.successLog(sql, managerType);
-		} catch (SQLException e) {
-			throw new SQLException(sql + " konnte nicht ausgeführt werden.", e);
 		}
 
 	}

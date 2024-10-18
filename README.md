@@ -3,8 +3,8 @@ Ziele: Projektmanagement Tool mit Datenanalyse und später vielleicht ein ML-Mod
 
 **ToDo:** 
 
-    - Klassen für Task, User, Project
-    - Dynamische SQL-Statements
-    - 
+    -
+    -
+    -
 
 - requires mysql-connector-j-9.0.0.jar
