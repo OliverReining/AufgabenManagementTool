@@ -129,7 +129,7 @@ public class WorkManager {
 		return allProjectLeads;
 	}
 
-	// TODO getTasksByUser(User currentUser)
+	// getTasksByUser(User currentUser)
 	// Methode, die alle Aufgaben zurückgibt, an denen ein Benutzer arbeitet oder
 	// gearbeitet hat
 	// Dazu gehört:
@@ -150,7 +150,7 @@ public class WorkManager {
 		return tasksByUser;
 	}
 
-	// TODO getProjectsByUser(User currentUser)
+	// getProjectsByUser(User currentUser)
 	// Methode, die alle Projekte zurückgibt, an denen ein Benutzer arbeitet oder
 	// gearbeitet hat
 	// Dazu gehört:
@@ -161,7 +161,10 @@ public class WorkManager {
 		ArrayList<Project> projectsByUser = new ArrayList<>();
 		ArrayList<Task> tasksByUser = getTasksByUser(currentUser);
 		for(Task task : tasksByUser) {
-			
+			Project project = task.getProject();
+			if(!projectsByUser.contains(project)) {
+				projectsByUser.add(project);
+			}
 		}
 
 		return projectsByUser;
@@ -169,8 +172,6 @@ public class WorkManager {
 
 	// TODO getProjectTeamMembers(Project project)
 	// Liste aller User die an einer Aufgabe im Projekt Arbeitszeiten haben
-	// Dazu gehört:
-	//
 
 	// Methode um die Gesamtarbeitszeit eines Benutzers an einem bestimmten Projekt
 	// zu berechnen
