@@ -1,0 +1,101 @@
+getMostActiveUsersOnProject(int projectId)
+Anweisung: Diese Methode im ProjectManager gibt die Benutzer zurück, die am meisten Zeit an einem bestimmten Projekt gearbeitet haben. Dazu:
+Alle Aufgaben für das Projekt über den TaskManager abrufen.
+Die Arbeitszeiten für jede Aufgabe analysieren.
+Benutzer nach Gesamtarbeitszeit sortieren und die aktivsten zurückgeben.
+
+
+getProjectsWithOverdueTasks()
+Anweisung: Entwickle eine Methode im ProjectManager, die alle Projekte zurückgibt, die überfällige Aufgaben enthalten. Dafür:
+Alle Aufgaben aus dem TaskManager abrufen.
+Prüfe, ob das Fälligkeitsdatum (dueDate) überschritten ist.
+Die zugehörigen Projekte zu diesen Aufgaben zurückgeben.
+
+
+getUsersWithIncompleteTasks(int projectId)
+Anweisung: Schreibe eine Methode, die alle Benutzer auflistet, die unvollständige Aufgaben bei einem bestimmten Projekt haben. Dazu:
+Alle Aufgaben des Projekts abrufen.
+Prüfen, welche Aufgaben nicht abgeschlossen sind.
+Alle Benutzer zurückgeben, die mit diesen Aufgaben verbunden sind.
+
+
+getProjectsWithProblemsReported()
+Anweisung: Entwickle eine Methode im WorktimeManager, die alle Projekte zurückgibt, bei denen Arbeitszeiten mit gemeldeten Problemen (problems-Flag) erfasst wurden:
+Arbeitszeiten abrufen, die als problematisch markiert wurden.
+Die zugehörigen Aufgaben und daraus die Projekte identifizieren.
+
+
+Berechne die Gesamtkosten eines Projekts, basierend auf den Arbeitszeiten der Benutzer und deren Stundensätzen (hourlyRate).
+Finde kritische Aufgaben, die am meisten Zeit oder Probleme verursacht haben.
+Tracke die Gesamtarbeitszeit pro Rolle auf einem Projekt, um die Effizienz bestimmter Teams zu bewerten (über role in der User-Klasse).
+
+
+
+
+	
+	// TODO getProjectsByUser(User currentUser)
+// Methode, die alle Projekte zurückgibt, an denen ein Benutzer arbeitet oder
+// gearbeitet hat
+// Dazu gehört:
+// Arbeitszeiten des Benutzers aus dem WorkManager abrufen
+// dazugehörigen Aufgaben aus dem TaskManager suchen
+// Aus den Aufgaben die Projekte ableiten und zurückgeben
+
+// TODO getTotalWorkHoursByUser(User currentUser)
+// Methode, die die gesamte Arbeitszeit eines Benutzers an allen Projekten summiert
+// Dazu gehört:
+// Arbeitszeiten aus dem WorkManager für den Benutzer abrufen
+// Alle relevanten Work-Entries summieren und die Gesamtzeit zurückgeben
+
+// TODO getAverageHourlyRateByRole(String role)
+// Methode, die den durchschnittlichen Stundensatz pro Rolle berechnet
+// Dazu gehört:
+// Benutzer mit der entsprechenden Rolle aus dem UserManager abrufen
+// Stundensätze summieren und durch die Anzahl der Benutzer teilen
+
+// TODO getAllProjectLeads()
+// Methode, die alle Projektleiter zurückgibt
+// Dazu gehört:
+// Benutzer aus dem UserManager abrufen, die isProjectLead = 1 haben
+// Liste der Projektleiter zurückgeben
+
+// TODO getUserCountByRole(String role)
+// Methode, die die Anzahl der Benutzer pro Rolle zurückgibt
+// Dazu gehört:
+// Benutzer aus dem UserManager mit der entsprechenden Rolle abrufen
+// Anzahl der Benutzer zählen und zurückgeben
+
+// TODO getTop5UsersByHourlyRate()
+// Methode, die die Top 5 Benutzer mit dem höchsten Stundensatz zurückgibt
+// Dazu gehört:
+// Alle Benutzer aus dem UserManager abrufen
+// Nach Stundensatz sortieren und die Top 5 zurückgeben
+
+// TODO getProjectProgress(Project project)
+// Methode, die den Fortschritt eines Projekts berechnet
+// Dazu gehört:
+// Alle Aufgaben des Projekts aus dem TaskManager abrufen
+// Abgeschlossene Aufgaben und Gesamtaufgaben zählen
+// Prozentualen Fortschritt berechnen und zurückgeben
+
+// TODO getProjectsWithMostUsers()
+// Methode, die Projekte zurückgibt, die die meisten Benutzer zugewiesen haben
+// Dazu gehört:
+// Benutzerprojekte aus einer Zuordnungstabelle abrufen
+// Für jedes Projekt die Anzahl der Benutzer zählen
+// Projekte nach Anzahl der Benutzer sortieren und die Top-Ergebnisse zurückgeben
+
+// TODO getAverageTimePerTaskByUser(User currentUser)
+// Methode, die die durchschnittliche Zeit pro Aufgabe für einen Benutzer berechnet
+// Dazu gehört:
+// Alle Arbeitszeiten des Benutzers aus dem WorkManager abrufen
+// Dazugehörige Aufgaben aus dem TaskManager ermitteln
+// Durchschnittliche Zeit pro Aufgabe berechnen und zurückgeben
+
+// TODO getUserHoursByProject(User currentUser)
+// Methode, die eine Übersicht der Stunden pro Projekt für einen Benutzer erstellt
+// Dazu gehört:
+// Arbeitszeiten des Benutzers aus dem WorkManager abrufen
+// Projektzuordnung der Aufgaben prüfen
+// Arbeitszeiten je Projekt summieren und zurückgeben
+	
